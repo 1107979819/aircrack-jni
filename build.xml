@@ -1,0 +1,60 @@
+<project default="all" name="aircrack-jni">
+
+	<property name="build" value="build"/>
+	<property name="classes" value="${build}/class"/>
+	<property name="jar" value="${build}/aircrack-jni.jar"/>
+
+	<property name="src" value="src/java"/>
+	<property name="lib" value="lib"/>
+
+	<property name="doc" value="doc"/>
+	
+	<target name="all" depends="compile, package"/>
+	
+	<!-- compile the sources -->
+	<target name="compile">
+		<mkdir dir="${classes}"/>
+		<javac
+			srcdir="${src}"
+			destdir="${classes}"
+			classpath="${bcelpath}"
+			source="1.5"
+			debug="true"
+			encoding="iso-8859-1"		
+		>
+			<classpath>
+				<fileset dir="${lib}">
+					<include name="*.jar"/>
+				</fileset>
+			</classpath>
+		</javac>
+	</target>
+
+	<!-- package the tools into a single .jar file -->
+	<target name="package" depends="compile"> 
+		<mkdir dir="${build}"/>
+		<jar destfile="${jar}"> 
+			<fileset dir="${classes}"><include name="**/*.class"/></fileset>
+			<manifest><attribute name="Main-Class" value="org.tudelft.aircrack.Interface"/></manifest>
+		</jar>
+	</target>
+
+	<!-- compile the sources -->
+	<target name="doc">
+		<mkdir dir="${tools.doc}"/>
+		<javadoc
+			sourcepath="${src}"
+			destdir="${doc}"
+			classpath="${bcelpath}"
+		>
+		</javadoc>
+	</target>
+
+	<!-- clean -->
+	<target name="clean">
+		<delete dir="${build}"/>
+		<delete file="${jar}"/>
+		<delete file="${doc}"/>
+	</target>
+
+</project>
