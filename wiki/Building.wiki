@@ -2,7 +2,7 @@
 
 = Compile the .so =
 
-First you must build aircrack-ng itself. Specifically we need `libosdep.a`. Download aircrack-ng [http://www.aircrack-ng.org/ source] and unpack somewhere. Go into the directory where you unpacked it and type `make`.
+First you must build aircrack-ng itself. Specifically we need `libosdep.a`. Download aircrack-ng [http://www.aircrack-ng.org/ source] and unpack somewhere. Make sure to satisfy these [http://www.aircrack-ng.org/doku.php?id=install_aircrack#installing_aircrack-ng_from_source requirements]. Go into the directory where you unpacked it and type `make`.
 
 Edit the Makefile in the root of aircrack-jni and change the following lines:
 
