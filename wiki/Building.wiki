@@ -1,5 +1,3 @@
-# Building aircrack-jni
-
 *This project is a work in progress, do not use for anything.*
 
 = Compile the .so =
