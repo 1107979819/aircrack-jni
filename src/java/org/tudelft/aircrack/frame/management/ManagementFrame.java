@@ -14,15 +14,21 @@ public class ManagementFrame extends Frame
 	int duration;
 	
 	@Bound
-	Address destination;
+	Address adress1;
 
 	@Bound
-	Address source;
+	Address SA;
 	
 	@Bound
-	Address BSSID; 
+	Address BSSID;
 	
 	@Bound
 	SequenceControl sequenceControl;
+	
+	@Override
+	public String toString()
+	{
+		return super.toString();
+	}
 
 }

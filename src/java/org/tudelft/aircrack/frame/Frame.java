@@ -1,12 +1,12 @@
 package org.tudelft.aircrack.frame;
 
-import org.tudelft.aircrack.frame.management.BeaconFrame;
-import org.tudelft.aircrack.frame.management.ManagementFrame;
-
 import nl.flotsam.preon.Codec;
 import nl.flotsam.preon.Codecs;
 import nl.flotsam.preon.DecodingException;
 import nl.flotsam.preon.annotation.Bound;
+
+import org.tudelft.aircrack.frame.management.ManagementFrame;
+import org.tudelft.aircrack.frame.management.Beacon;
 
 public class Frame
 {
@@ -26,16 +26,7 @@ public class Frame
 		switch (frameControl.getType())
 		{
 			case Management:
-				switch (frameControl.getSubType())
-				{
-					case Beacon:
-						Codec<BeaconFrame> beaconFrameCodec = Codecs.create(BeaconFrame.class);
-						return Codecs.decode(beaconFrameCodec, buffer);
-						
-					default: 
-						Codec<ManagementFrame> managementFrameCodec = Codecs.create(ManagementFrame.class);
-						return Codecs.decode(managementFrameCodec, buffer);		
-				}
+				return decodeManagementFrame(frameControl, buffer);				
 
 			case Control:
 
@@ -43,18 +34,32 @@ public class Frame
 
 		}
 
-		//		switch (frameControl.getSubType())
-		//		{
-		//			case Beacon:
-		//				return Beacon.decode(buffer);		
-		//		}			
-
 		return Codecs.decode(frameCodec, buffer);						
 	}
 
+	private static Frame decodeManagementFrame(FrameControl frameControl, byte[] buffer) throws DecodingException
+	{
+		switch (frameControl.getSubType())
+		{
+			case Beacon:
+				Codec<Beacon> beaconCodec = Codecs.create(Beacon.class);
+				return Codecs.decode(beaconCodec, buffer);						
+		}
+		
+		// The subtype hasn't been implemented yet, decode the part common to all management frames.
+		Codec<ManagementFrame> managementFrameCodec = Codecs.create(ManagementFrame.class);
+		return Codecs.decode(managementFrameCodec, buffer);						
+	}
+	
 	public FrameControl getFrameControl()
 	{
 		return frameControl;
+	}
+	
+	@Override
+	public String toString()
+	{
+		return frameControl.toString();
 	}
 
 }
