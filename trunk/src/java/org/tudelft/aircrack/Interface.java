@@ -164,27 +164,7 @@ public class Interface
 			{
 				Frame packet = Frame.decode(buffer);
 				
-				System.out.println(packet.getFrameControl());
-				
-				if (packet.getFrameControl().getSubType()==SubType.Beacon)
-				{
-					System.out.println(receiveInfo);
-//					System.out.println(header);
-
-					System.out.printf("\t%2d (%3d) ", i, bytesRead);
-					for (int j=0; j<Math.min(64, bytesRead); j++)
-						System.out.print(String.format("%02x ", buffer[j]));
-					System.out.println();
-
-					// Extract SSID
-					int len = buffer[37];
-					byte[] ssid = new byte[len];
-					for (int j=0; j<len; j++)
-						ssid[j] = buffer[j+38];
-					
-					System.out.println(new String(ssid));
-				
-				}
+				System.out.println(packet);
 				
 			} catch (DecodingException e)
 			{
