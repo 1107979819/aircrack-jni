@@ -23,4 +23,8 @@ public class AckFrame extends Frame {
 	public String toString(){
 		return String.format("[ACK: recipient=%s]", recipient.toString());
 	}
+
+	public byte[] getCRC() {
+		return fcs.getCRC();
+	}
 }
