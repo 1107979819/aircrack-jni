@@ -144,12 +144,6 @@ public class Interface
 		Interface iface = new Interface("mon0");
 		iface.open();
 
-		iface.setChannel(6);
-		
-		System.out.println("MAC: " + iface.getMac());
-
-		iface.setChannel(5);
-
 		for (int i=0; i<1000; i++)
 		{
 			byte[] buffer = new byte[4096];
@@ -159,10 +153,8 @@ public class Interface
 			
 			try
 			{
-				Frame packet = Frame.decode(buffer);
-				
-				if (packet.getFrameControl().getSubType()==SubType.CTS)
-					System.out.println(bytesRead);
+				Frame frame = Frame.decode(buffer);				
+				System.out.println(frame);
 				
 			} catch (DecodingException e)
 			{
