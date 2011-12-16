@@ -161,7 +161,8 @@ public class Interface
 			{
 				Frame packet = Frame.decode(buffer);
 				
-				System.out.println(packet);
+				if (packet.getFrameControl().getSubType()==SubType.CTS)
+					System.out.println(bytesRead);
 				
 			} catch (DecodingException e)
 			{
