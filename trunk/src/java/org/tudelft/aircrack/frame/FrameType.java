@@ -2,7 +2,7 @@ package org.tudelft.aircrack.frame;
 
 import nl.flotsam.preon.annotation.BoundEnumOption;
 
-public enum PacketType
+public enum FrameType
 {
 	
 	@BoundEnumOption(value = 0)

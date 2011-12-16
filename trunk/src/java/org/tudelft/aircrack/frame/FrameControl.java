@@ -10,7 +10,7 @@ public class FrameControl
 	int protocolVersion;
 	
 	@BoundNumber(size="2")
-	PacketType type;
+	FrameType type;
 	
 	@BoundNumber(size="4")
 	int subType;
@@ -50,7 +50,7 @@ public class FrameControl
 				);
 	}
 	
-	public PacketType getType()
+	public FrameType getType()
 	{
 		return type;
 	}
