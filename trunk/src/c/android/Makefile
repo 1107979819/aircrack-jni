@@ -1,0 +1,18 @@
+NDK=/home/niels/android-ndk-r7
+TOOLCHAIN=${NDK}/toolchains/arm-linux-androideabi-4.4.3/prebuilt/linux-x86/bin
+CC=${TOOLCHAIN}/arm-linux-androideabi-gcc
+CFLAGS=-Iaircrack-ng/src/osdep -DLinux -DAIRCRACK_NG_BYTE_ORDER_DEFINED --sysroot ${NDK}/platforms/android-4/arch-arm/ -fPIC -mandroid -DANDROID -DOS_ANDROID 
+LFLAGS=--sysroot ${NDK}/platforms/android-4/arch-arm/ -fPIC -mandroid -DANDROID -DOS_ANDROID 
+
+CFILES=main.c
+OFILES=${CFILES:.c=.o}
+
+all: ${OFILES}
+	${CC} ${LFLAGS} ${OFILES} libosdep.a -o main 
+
+%.o: %.c
+	${CC} ${CFLAGS} -c $< -o ${<:.c=.o}
+	
+clean:
+	rm -rf *.o
+	
