@@ -157,9 +157,6 @@ public class Interface
 			ReceiveInfo receiveInfo = new ReceiveInfo();
 			int bytesRead = iface.read(buffer, receiveInfo);
 			
-			// Clear buffer
-			// for (int j=bytesRead; j<buffer.length; j++) buffer[j] = 0x00;
-			
 			try
 			{
 				Frame packet = Frame.decode(buffer);
@@ -171,11 +168,6 @@ public class Interface
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
-
-//			WifiPacket packet = WifiPacket.decode(buffer);
-//			if (packet!=null)
-//				System.out.println(packet.toString());
 			
 		}
 		
