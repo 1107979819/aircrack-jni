@@ -28,7 +28,7 @@ public class ManagementFrame extends Frame
 	@Override
 	public String toString()
 	{
-		return super.toString();
+		return super.toString() + " adr1:" + adress1 + " SA:" + SA + " BSSID:" + BSSID;
 	}
 
 }
