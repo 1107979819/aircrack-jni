@@ -4,23 +4,23 @@ import java.nio.ByteBuffer;
 import java.util.zip.CRC32;
 import java.util.zip.Checksum;
 
-import nl.flotsam.preon.annotation.BoundNumber;
+import nl.flotsam.preon.annotation.BoundList;
 
 public class FCS {
 
-	@BoundNumber(size="32")
+	@BoundList(size="4")
 	private byte[] crc;
 	
-	public FCS(byte[] crc){
-		if (crc.length!=4) throw new IllegalArgumentException("FCS should be 4 bytes long");
-		
-		for (int i=0;i<crc.length;i++)
-			this.crc[i] = crc[i];
-	}
+//	public FCS(byte[] crc){
+//		if (crc.length!=4) throw new IllegalArgumentException("FCS should be 4 bytes long");
+//		
+//		for (int i=0;i<crc.length;i++)
+//			this.crc[i] = crc[i];
+//	}
 	
-	public byte[] getFCS(){
-		return crc;
-	}
+//	public byte[] getFCS(){
+//		return crc;
+//	}
 	
 	public static byte[] compute(byte[] data){
 		
@@ -34,6 +34,10 @@ public class FCS {
 //                (byte)(value >>> 16),
 //                (byte)(value >>> 8),
 //                (byte)value};
+	}
+
+	public byte[] getCRC() {
+		return crc;
 	}
 	
 }

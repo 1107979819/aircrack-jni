@@ -78,6 +78,21 @@ public class Interface
 		
 		return _read(wif, buffer, receiveInfo);
 	}
+	
+	public int write(byte[] buffer)
+	{
+		TransmitInfo transmitInfo = new TransmitInfo();
+
+		return _write(wif, buffer, transmitInfo);
+	}
+
+	private int write(byte[] buffer, TransmitInfo transmitInfo) 
+	{
+		if (transmitInfo == null)
+			throw new NullPointerException("Transmit info object may not be null");
+
+		return _write(wif, buffer, transmitInfo);
+	}
 
 	public void setChannel(int channel)
 	{
@@ -144,7 +159,8 @@ public class Interface
 		Interface iface = new Interface("mon0");
 		iface.open();
 
-		for (int i=0; i<1000; i++)
+		// capture packets
+		for (int i=0; i<100; i++)
 		{
 			byte[] buffer = new byte[4096];
 			
@@ -164,7 +180,16 @@ public class Interface
 			
 		}
 		
+		// inject packets
+		for (int i=0; i<100; i++) 
+		{
+			String str = "The spagetti monster ate " + i + " plates of pasta";
+		
+			TransmitInfo transmitInfo = new TransmitInfo();
+			
+			System.out.println(iface.write(str.getBytes(), transmitInfo));
+		}
+		
 		iface.close();
-	}
-	
+	}	
 }
