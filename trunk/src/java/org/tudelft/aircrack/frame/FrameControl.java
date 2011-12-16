@@ -10,7 +10,7 @@ public class FrameControl
 	int protocolVersion;
 	
 	@BoundNumber(size="2")
-	int type;
+	PacketType type;
 	
 	@BoundNumber(size="4")
 	int subType;
@@ -45,14 +45,14 @@ public class FrameControl
 		return String.format(
 				"FrameControl[protocol=%d, type=%d/%s, subType=%d/%s]",
 				protocolVersion,
-				type, getType().toString(),
+				type.ordinal(), getType().toString(),
 				subType, getSubType().toString()
 				);
 	}
 	
 	public PacketType getType()
 	{
-		return PacketType.values()[type];
+		return type;
 	}
 	
 	public SubType getSubType()
