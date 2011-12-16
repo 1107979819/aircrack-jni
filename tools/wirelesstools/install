@@ -1,0 +1,12 @@
+adb -s $1 push iwgetid /system/bin
+adb -s $1 shell chmod +x /system/bin/iwgetid
+adb -s $1 push iwlist /system/bin
+adb -s $1 shell chmod +x /system/bin/iwlist
+adb -s $1 push iwpriv /system/bin
+adb -s $1 shell chmod +x /system/bin/iwpriv
+adb -s $1 push iwspy /system/bin
+adb -s $1 shell chmod +x /system/bin/iwspy
+adb -s $1 push iwconfig /system/bin
+adb -s $1 shell chmod +x /system/bin/iwconfig
+adb -s $1 push iwevent /system/bin
+adb -s $1 shell chmod +x /system/bin/iwevent
