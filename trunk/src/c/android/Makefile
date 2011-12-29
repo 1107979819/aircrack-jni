@@ -4,11 +4,12 @@ CC=${TOOLCHAIN}/arm-linux-androideabi-gcc
 CFLAGS=-Iaircrack-ng/src/osdep -DLinux -DAIRCRACK_NG_BYTE_ORDER_DEFINED --sysroot ${NDK}/platforms/android-4/arch-arm/ -fPIC -mandroid -DANDROID -DOS_ANDROID 
 LFLAGS=--sysroot ${NDK}/platforms/android-4/arch-arm/ -fPIC -mandroid -DANDROID -DOS_ANDROID 
 
-CFILES=main.c
+OUTPUT=wifi_dump
+CFILES=wifi_dump.c
 OFILES=${CFILES:.c=.o}
 
 all: ${OFILES}
-	${CC} ${LFLAGS} ${OFILES} libosdep.a -o main 
+	${CC} ${LFLAGS} ${OFILES} libosdep.a -o ${OUTPUT} 
 
 %.o: %.c
 	${CC} ${CFLAGS} -c $< -o ${<:.c=.o}
