@@ -1,12 +1,15 @@
 package org.tudelft.aircrack.frame;
 
-import nl.flotsam.preon.annotation.BoundList;
+import org.codehaus.preon.annotation.BoundList;
 
-public class Address
+public class Address implements Comparable<Address>
 {
+
+	public final static Address Broadcast = new Address(new byte[] { (byte)0xff, (byte)0xff, (byte)0xff, (byte)0xff, (byte)0xff, (byte)0xff }); 
+	public final static Address Zero = new Address(new byte[] { 0, 0, 0, 0, 0, 0 }); 
 	
 	@BoundList(size="6")
-	private byte[] address;
+	public byte[] address;
 	
 	public Address()
 	{
@@ -25,6 +28,17 @@ public class Address
 	public byte[] getAddress()
 	{
 		return address;
+	}
+	
+	@Override
+	public int compareTo(Address o)
+	{
+		for (int i=5; i>=0; i--)
+		{
+			if (address[i]<o.address[i]) return -1;
+			if (address[i]>o.address[i]) return 1;
+		}
+		return 0;
 	}
 	
 	@Override

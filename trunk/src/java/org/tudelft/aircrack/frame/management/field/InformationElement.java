@@ -1,7 +1,7 @@
-package org.tudelft.aircrack.frame.management;
+package org.tudelft.aircrack.frame.management.field;
 
-import nl.flotsam.preon.annotation.BoundList;
-import nl.flotsam.preon.annotation.BoundNumber;
+import org.codehaus.preon.annotation.BoundList;
+import org.codehaus.preon.annotation.BoundNumber;
 
 
 /**
@@ -49,10 +49,25 @@ public class InformationElement
 		this.length = data.length;
 	}
 	
+	public ElementId getElementId()
+	{
+		return elementId;
+	}
+	
+	public byte[] getData()
+	{
+		return data;
+	}
+	
 	@Override
 	public String toString()
 	{
-		return elementId.toString() + " [length="+length+"]";
+		StringBuffer dataStr = new StringBuffer();
+		
+		for (int i=0; i<data.length; i++)
+			dataStr.append(String.format("%02x ", data[i]));
+		
+		return String.format("%-20s length:%-4d %s", elementId, length, dataStr.toString());
 	}
 	
 	public String getInformationAsString()

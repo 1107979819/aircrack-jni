@@ -16,6 +16,7 @@ public enum SubType
 	Disassociation(FrameType.Management, 0xa),
 	Authentication(FrameType.Management, 0xb),
 	Deauthentication(FrameType.Management, 0xc),
+	Action(FrameType.Management, 0xd),
 	
 	// Control
 	BlockAckRequest(FrameType.Control, 0x8),
@@ -24,18 +25,27 @@ public enum SubType
 	RTS(FrameType.Control, 0xb),
 	CTS(FrameType.Control, 0xc),
 	ACK(FrameType.Control, 0xd),
-	CFEND(FrameType.Control, 0xe),
-	CFEND_CFACK(FrameType.Control, 0xf),
+	CfEnd(FrameType.Control, 0xe),
+	CfEnd_CfAck(FrameType.Control, 0xf),
 	
 	// Data
-	DATA(FrameType.Data, 0x0),
-	DATA_CFACK(FrameType.Data, 0x1),
-	DATA_CFPOLL(FrameType.Data, 0x2),
-	DATA_CFACK_CFPOLL(FrameType.Data, 0x3),
+	Data(FrameType.Data, 0x0),
+	Data_CfAck(FrameType.Data, 0x1),
+	Data_CfPoll(FrameType.Data, 0x2),
+	Data_CfAck_CfPoll(FrameType.Data, 0x3),
 	NullFunction(FrameType.Data, 0x4),
-	CFACK(FrameType.Data, 0x5),
-	CFPOLL(FrameType.Data, 0x6),
-	CFACK_CFPOLL(FrameType.Data, 0x7),
+	CfAck(FrameType.Data, 0x5),
+	CfPoll(FrameType.Data, 0x6),
+	CfAck_CfPoll(FrameType.Data, 0x7),
+
+	QoS_Data(FrameType.Data, 0x8),
+	QoS_Data_CfAck(FrameType.Data, 0x9),
+	QoS_Data_CfPoll(FrameType.Data, 0xa),
+	QoS_Data_CfAck_CfPoll(FrameType.Data, 0xb),
+	QOS_NullFunction(FrameType.Data, 0xc),
+	QoS_Reserved(FrameType.Data, 0xd),
+	QoS_CfPoll(FrameType.Data, 0xe),
+	Qos_CfAck_CfPoll(FrameType.Data, 0xf),
 	
 	// ???
 	Reserved(FrameType.Reserved, -1);
@@ -56,6 +66,17 @@ public enum SubType
 				return sub;
 		
 		return Reserved;
+	}
+	
+	public int getSubType()
+	{
+		return subType;
+	}
+	
+	public boolean isQos()
+	{
+		System.out.println("Zomg!");
+		return (subType & 0x8) != 0;
 	}
 	
 }

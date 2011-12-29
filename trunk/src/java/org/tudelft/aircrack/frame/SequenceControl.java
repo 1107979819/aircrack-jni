@@ -1,15 +1,15 @@
 package org.tudelft.aircrack.frame;
 
-import nl.flotsam.preon.annotation.BoundNumber;
+import org.codehaus.preon.annotation.BoundNumber;
 
 public class SequenceControl
 {
 	
 	@BoundNumber(size="4")
-	int fragmentNumber;
+	public int fragmentNumber;
 	
 	@BoundNumber(size="12")
-	int sequenceNumber;
+	public int sequenceNumber;
 	
 	@Override
 	public String toString()

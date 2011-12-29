@@ -4,7 +4,7 @@ import java.nio.ByteBuffer;
 import java.util.zip.CRC32;
 import java.util.zip.Checksum;
 
-import nl.flotsam.preon.annotation.BoundList;
+import org.codehaus.preon.annotation.BoundList;
 
 public class FCS {
 

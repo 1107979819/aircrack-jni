@@ -1,7 +1,7 @@
-package org.tudelft.aircrack.frame;
+package org.tudelft.aircrack.frame.data.field;
 
-import nl.flotsam.preon.annotation.Bound;
-import nl.flotsam.preon.annotation.BoundNumber;
+import org.codehaus.preon.annotation.Bound;
+import org.codehaus.preon.annotation.BoundNumber;
 
 /**
  * QoS control field.
@@ -19,7 +19,7 @@ import nl.flotsam.preon.annotation.BoundNumber;
  */
 // TODO fix comments
 // TODO add getters/setters for field4 (TXOP limit, AP PS Buffer State, TXOP duration requested, Queue Size)
-public class QosControl
+public class QualityOfServiceControl
 {
 	@BoundNumber(size="4")
 	private int tid;

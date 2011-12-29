@@ -1,34 +1,80 @@
 package org.tudelft.aircrack.frame.management;
 
+import org.codehaus.preon.annotation.Bound;
+import org.codehaus.preon.annotation.BoundNumber;
 import org.tudelft.aircrack.frame.Address;
 import org.tudelft.aircrack.frame.Frame;
 import org.tudelft.aircrack.frame.SequenceControl;
-
-import nl.flotsam.preon.annotation.Bound;
-import nl.flotsam.preon.annotation.BoundNumber;
 
 public class ManagementFrame extends Frame
 {
 
 	@BoundNumber(size="16")
-	int duration;
+	public int duration;
 	
 	@Bound
-	Address adress1;
+	public Address address1;
 
 	@Bound
-	Address SA;
+	public Address SA;
 	
 	@Bound
-	Address BSSID;
+	public Address BSSID;
 	
 	@Bound
-	SequenceControl sequenceControl;
+	public SequenceControl sequenceControl;
+	
+	public ManagementFrame()
+	{
+		address1 =  BSSID = Address.Broadcast;
+		SA = Address.Zero;
+		sequenceControl = new SequenceControl();
+	}
+	
+	public int getDuration()
+	{
+		return duration;
+	}
+	
+	public Address getAddress1()
+	{
+		return address1;
+	}
+	
+	public Address getSA()
+	{
+		return SA;
+	}
+	
+	public Address getBSSID()
+	{
+		return BSSID;
+	}
+	
+	public void setDuration(int duration)
+	{
+		this.duration = duration;
+	}
+	
+	public void setAddress1(Address address1)
+	{
+		this.address1 = address1;
+	}
+	
+	public void setSA(Address sA)
+	{
+		SA = sA;
+	}
+	
+	public void setBSSID(Address bSSID)
+	{
+		BSSID = bSSID;
+	}
 	
 	@Override
 	public String toString()
 	{
-		return super.toString() + " adr1:" + adress1 + " SA:" + SA + " BSSID:" + BSSID;
+		return super.toString() + " duration: " + duration + " adr1:" + address1 + " SA:" + SA + " BSSID:" + BSSID;
 	}
 
 }
