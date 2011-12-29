@@ -33,7 +33,7 @@ void main()
 	int i, bytesRead;
 	
 	// Open trace file
-	traceFile = fopen("/sdcard/", "wb");
+	traceFile = fopen("wifi.log", "wb");
 
 	// Open wireless interface
 	wi = wi_open("mon0");
@@ -45,7 +45,7 @@ void main()
 	// Get MAC
 	char mac[6];
 	int ret = wi_get_mac(wi, mac);
-	printf("MAC: %02x:%02x:%02x:%02x:%02x:%02x\n", mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
+	printf("MAC: %02x:%02x:%02x:%02x:%02x:%02x\n", mac[0]&0xff, mac[1]&0xff, mac[2]&0xff, mac[3]&0xff, mac[4]&0xff, mac[5]&0xff);
 
 	// Receive a WiFi packet
 	
@@ -55,11 +55,8 @@ void main()
 		bytesRead = wi_read(wi, buffer, 4096, &rxi);
 
 		// Magic
-		putchar('M');
-		putchar('A');
-		putchar('G');
-		putchar('I');
-		putchar('C');
+		unsigned char * magic = "MAGIC";
+		dump(traceFile, magic, 5);
 
 		// Dump timestamp
 		unsigned long time = millis();
