@@ -1,0 +1,20 @@
+OSDEP=../aircrack-ng/src/osdep/
+NDK=/home/niels/android-ndk-r7
+TOOLCHAIN=${NDK}/toolchains/arm-linux-androideabi-4.4.3/prebuilt/linux-x86/bin
+CC=${TOOLCHAIN}/arm-linux-androideabi-gcc
+CFLAGS=-Iaircrack-ng/src/osdep -DLinux -DAIRCRACK_NG_BYTE_ORDER_DEFINED --sysroot ${NDK}/platforms/android-4/arch-arm/ -fPIC -I${OSDEP}
+LFLAGS=--sysroot ${NDK}/platforms/android-4/arch-arm/ -fPIC
+
+OUTPUT=wifi_dump
+CFILES=wifi_dump.c
+OFILES=${CFILES:.c=.o}
+
+all: ${OFILES}
+	${CC} ${LFLAGS} ${OFILES} ${OSDEP}/libosdep.a -o ${OUTPUT} 
+
+%.o: %.c
+	${CC} ${CFLAGS} -c $< -o ${<:.c=.o}
+	
+clean:
+	rm -rf *.o
+	
