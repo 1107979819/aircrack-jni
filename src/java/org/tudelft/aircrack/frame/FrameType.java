@@ -1,6 +1,6 @@
 package org.tudelft.aircrack.frame;
 
-import nl.flotsam.preon.annotation.BoundEnumOption;
+import org.codehaus.preon.annotation.BoundEnumOption;
 
 public enum FrameType
 {

@@ -1,43 +1,48 @@
 package org.tudelft.aircrack.frame;
 
-import nl.flotsam.preon.annotation.Bound;
-import nl.flotsam.preon.annotation.BoundNumber;
+import org.codehaus.preon.annotation.Bound;
+import org.codehaus.preon.annotation.BoundNumber;
 
 public class FrameControl
 {
 
 	@BoundNumber(size="2")
-	int protocolVersion;
+	public int protocolVersion;
 	
 	@BoundNumber(size="2")
-	FrameType type;
+	public FrameType type;
 	
 	@BoundNumber(size="4")
-	int subType;
+	public int subType;
 
 	@Bound
-	boolean toDs;
+	public boolean toDs;
 	
 	@Bound
-	boolean fromDs;
+	public boolean fromDs;
 	
 	@Bound
-	boolean moreFrag;
+	public boolean moreFrag;
 	
 	@Bound
-	boolean retry;
+	public boolean retry;
 	
 	@Bound
-	boolean powerMgt;
+	public boolean powerMgt;
 	
 	@Bound
-	boolean moreData;
+	public boolean moreData;
 	
 	@Bound
-	boolean WEP;
+	public boolean WEP;
 	
 	@Bound
-	boolean order;
+	public boolean order;
+	
+	public FrameControl()
+	{
+		type = FrameType.Reserved;
+	}
 
 	@Override
 	public String toString()
@@ -59,5 +64,100 @@ public class FrameControl
 	{
 		return SubType.find(getType(), subType);
 	}
-
+	
+	public boolean getFromDs()
+	{
+		return fromDs;
+	}
+	
+	public boolean getMoreData()
+	{
+		return moreData;
+	}
+	
+	public boolean getMoreFrag()
+	{
+		return moreFrag;
+	}
+	
+	public boolean getOrder()
+	{
+		return order;
+	}
+	
+	public boolean getPowerMgt()
+	{
+		return powerMgt;
+	}
+	
+	public boolean getRetry()
+	{
+		return retry;
+	}
+	
+	public boolean getToDs()
+	{
+		return toDs;
+	}
+	
+	public boolean getWEP()
+	{
+		return WEP;
+	}
+	
+	public void setFromDs(boolean fromDs)
+	{
+		this.fromDs = fromDs;
+	}
+	
+	public void setMoreData(boolean moreData)
+	{
+		this.moreData = moreData;
+	}
+	
+	public void setMoreFrag(boolean moreFrag)
+	{
+		this.moreFrag = moreFrag;
+	}
+	
+	public void setOrder(boolean order)
+	{
+		this.order = order;
+	}
+	
+	public void setPowerMgt(boolean powerMgt)
+	{
+		this.powerMgt = powerMgt;
+	}
+	
+	public void setProtocolVersion(int protocolVersion)
+	{
+		this.protocolVersion = protocolVersion;
+	}
+	
+	public void setRetry(boolean retry)
+	{
+		this.retry = retry;
+	}
+	
+	public void setSubType(int subType)
+	{
+		this.subType = subType;
+	}
+	
+	public void setToDs(boolean toDs)
+	{
+		this.toDs = toDs;
+	}
+	
+	public void setType(FrameType type)
+	{
+		this.type = type;
+	}
+	
+	public void setWEP(boolean wEP)
+	{
+		WEP = wEP;
+	}
+	
 }

@@ -1,6 +1,6 @@
-package org.tudelft.aircrack.frame.management;
+package org.tudelft.aircrack.frame.management.field;
 
-import nl.flotsam.preon.annotation.BoundEnumOption;
+import org.codehaus.preon.annotation.BoundEnumOption;
 
 public enum ElementId
 {

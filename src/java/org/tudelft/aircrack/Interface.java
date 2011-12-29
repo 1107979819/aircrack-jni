@@ -1,14 +1,14 @@
 package org.tudelft.aircrack;
 
-import nl.flotsam.preon.DecodingException;
-
+import org.codehaus.preon.DecodingException;
 import org.tudelft.aircrack.frame.Address;
 import org.tudelft.aircrack.frame.Frame;
-import org.tudelft.aircrack.frame.SubType;
 
 public class Interface
 {
 
+	private final static byte[] buffer = new byte[4096];
+	
 	static
 	{
 		System.loadLibrary("aircrack-ng-jni");
@@ -64,6 +64,17 @@ public class Interface
 			_close(wif);
 	}
 	
+	public Frame receive() throws DecodingException
+	{
+		ReceiveInfo receiveInfo = new ReceiveInfo();
+		int bytesRead = read(buffer, receiveInfo);
+		
+		byte[] buf = new byte[bytesRead];
+		System.arraycopy(buffer, 0, buf, 0, bytesRead);
+		
+		return Frame.decode(receiveInfo, buf);
+	}
+	
 	public int read(byte[] buffer)
 	{
 		ReceiveInfo receiveInfo = new ReceiveInfo();
@@ -86,7 +97,7 @@ public class Interface
 		return _write(wif, buffer, transmitInfo);
 	}
 
-	private int write(byte[] buffer, TransmitInfo transmitInfo) 
+	public int write(byte[] buffer, TransmitInfo transmitInfo) 
 	{
 		if (transmitInfo == null)
 			throw new NullPointerException("Transmit info object may not be null");
@@ -169,7 +180,7 @@ public class Interface
 			
 			try
 			{
-				Frame frame = Frame.decode(buffer);				
+				Frame frame = Frame.decode(receiveInfo, buffer);				
 				System.out.println(frame);
 				
 			} catch (DecodingException e)
@@ -181,14 +192,14 @@ public class Interface
 		}
 		
 		// inject packets
-		for (int i=0; i<100; i++) 
-		{
-			String str = "The spagetti monster ate " + i + " plates of pasta";
-		
-			TransmitInfo transmitInfo = new TransmitInfo();
-			
-			System.out.println(iface.write(str.getBytes(), transmitInfo));
-		}
+//		for (int i=0; i<100; i++) 
+//		{
+//			String str = "The spagetti monster ate " + i + " plates of pasta";
+//		
+//			TransmitInfo transmitInfo = new TransmitInfo();
+//			
+//			System.out.println(iface.write(str.getBytes(), transmitInfo));
+//		}
 		
 		iface.close();
 	}	

@@ -1,6 +1,6 @@
 package org.tudelft.aircrack.frame;
 
-import nl.flotsam.preon.annotation.BoundList;
+import org.codehaus.preon.annotation.BoundList;
 
 public class Timestamp
 {
