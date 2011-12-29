@@ -83,12 +83,12 @@ JNIEXPORT jint JNICALL Java_org_tudelft_aircrack_Interface__1write(JNIEnv * env,
 
 	// Allocate a temporary transmit buffer and copy packet into it
 	unsigned char *buffer = (unsigned char*)malloc(bufferSize);
-	(*env)->SetByteArrayRegion(env, bufferArray, 0, bufferSize, buffer);
-
+	(*env)->GetByteArrayRegion(env, bufferArray, 0, bufferSize, buffer);
+	
 	// Transmit packet
 	int ret = wi_write(wi, buffer, bufferSize, &txi);
 
-	// Free buffer
+	// Free temporary buffer
 	free(buffer);
 
 	return ret;
