@@ -97,17 +97,20 @@ public enum ElementId
 	@BoundEnumOption(value = 44)
 	tclasProcessing,
 
-	// reserved 45
+	@BoundEnumOption(value = 45)
+	reserved_45,
 	
 	@BoundEnumOption(value = 46)
 	qosCapability,
 	
-	// reserved 47
+	@BoundEnumOption(value = 47)
+	reserved_47,
 	
 	@BoundEnumOption(value = 48)
 	rsn,
 	
-	// reserved 49
+	@BoundEnumOption(value = 49)
+	reserved_49,
 	
 	@BoundEnumOption(value = 50)
 	extendedSupportRates,

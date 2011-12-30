@@ -8,44 +8,35 @@ import org.tudelft.aircrack.Interface;
 import org.tudelft.aircrack.TransmitInfo;
 import org.tudelft.aircrack.frame.Address;
 import org.tudelft.aircrack.frame.Frame;
-import org.tudelft.aircrack.frame.Util;
 import org.tudelft.aircrack.frame.management.ProbeRequest;
 import org.tudelft.aircrack.frame.management.ProbeResponse;
+import org.tudelft.aircrack.frame.management.field.ElementId;
+import org.tudelft.aircrack.frame.management.field.InformationElement;
 import org.tudelft.aircrack.frame.management.field.InformationElementListCodecFactory;
 
 public class Probe
 {
 
-	public static void main(String args[]) throws IOException
+	public static void main(String args[]) throws IOException, DecodingException
 	{
 		Interface iface = new Interface("mon0");
 		iface.open();
 
-//		ManagementFrame frame = new ManagementFrame();
-//		Codec<ManagementFrame> codec = Codecs.create(ManagementFrame.class/*, new InformationElementListCodecFactory()*/);
-//		byte rawFrame[] = Codecs.encode(frame, codec);
-//		
-//		Util.printByteBuffer(rawFrame);
+		Address myMac = new Address(new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06 });
 
 		// Send probe request
 		ProbeRequest probeRequest = new ProbeRequest();
 		probeRequest.setAddress1(Address.Broadcast);
-		probeRequest.setSA(iface.getMac());
+		probeRequest.setSA(myMac);
 		probeRequest.setBSSID(Address.Broadcast);
 		probeRequest.setDuration(1 * 1000);
+		probeRequest.getElements().addElement(new InformationElement(ElementId.SSID, ""));
 		
 		// Transmit probe request
 		TransmitInfo transmitInfo = new TransmitInfo();
 		byte rawFrame[] = Codecs.encode(probeRequest, Codecs.create(ProbeRequest.class, new InformationElementListCodecFactory()));
-
-		Util.printByteBuffer(rawFrame);
 		
-		System.out.println(iface.write(rawFrame, transmitInfo));
-		System.out.println(iface.write(rawFrame, transmitInfo));
-		System.out.println(iface.write(rawFrame, transmitInfo));
-		System.out.println(iface.write(rawFrame, transmitInfo));
-
-		Util.printByteBuffer(rawFrame);
+		iface.write(rawFrame, transmitInfo);
 		
 		// Wait for responses during 10 seconds
 		long time = System.currentTimeMillis();
@@ -55,15 +46,22 @@ public class Probe
 			try
 			{
 				Frame frame = iface.receive();
+				if (frame==null)
+					continue;
 				
 				if (frame instanceof ProbeResponse)
 				{
 					ProbeResponse response = (ProbeResponse)frame;
 					
-					if (response.getAddress1().compareTo(iface.getMac())==0)
-						System.out.println(frame);
-					else
-						System.out.println(response.getAddress1());
+					if (response.getAddress1().compareTo(myMac)==0)
+					{
+						System.out.printf(
+								"%s | %4d dBm | %s \n",
+								((ProbeResponse) frame).getBSSID().toString(),
+								frame.getReceiveInfo().getPower(),
+								((ProbeResponse) frame).getSsid()
+								);
+					}
 				}
 				
 			} catch (DecodingException ex)

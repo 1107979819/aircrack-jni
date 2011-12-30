@@ -72,7 +72,10 @@ public class Interface
 		byte[] buf = new byte[bytesRead];
 		System.arraycopy(buffer, 0, buf, 0, bytesRead);
 		
-		return Frame.decode(receiveInfo, buf);
+		if (bytesRead==0)
+			return null;		
+		else
+			return Frame.decode(receiveInfo, buf);
 	}
 	
 	public int read(byte[] buffer)

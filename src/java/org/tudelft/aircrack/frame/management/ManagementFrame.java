@@ -4,6 +4,7 @@ import org.codehaus.preon.annotation.Bound;
 import org.codehaus.preon.annotation.BoundNumber;
 import org.tudelft.aircrack.frame.Address;
 import org.tudelft.aircrack.frame.Frame;
+import org.tudelft.aircrack.frame.FrameType;
 import org.tudelft.aircrack.frame.SequenceControl;
 
 public class ManagementFrame extends Frame
@@ -13,22 +14,21 @@ public class ManagementFrame extends Frame
 	public int duration;
 	
 	@Bound
-	public Address address1;
+	public Address address1 = Address.Broadcast;
 
 	@Bound
-	public Address SA;
+	public Address SA = Address.Zero;
 	
 	@Bound
-	public Address BSSID;
+	public Address BSSID = Address.Broadcast;
 	
 	@Bound
-	public SequenceControl sequenceControl;
+	public SequenceControl sequenceControl = new SequenceControl();
 	
 	public ManagementFrame()
 	{
-		address1 =  BSSID = Address.Broadcast;
-		SA = Address.Zero;
-		sequenceControl = new SequenceControl();
+		// Set frame type to Management
+		frameControl.setType(FrameType.Management);
 	}
 	
 	public int getDuration()
