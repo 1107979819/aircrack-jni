@@ -7,7 +7,7 @@ import org.tudelft.aircrack.frame.Frame;
 public class Interface
 {
 
-	private final static byte[] buffer = new byte[4096];
+	private final static byte[] buffer = new byte[32768];
 	
 	static
 	{
