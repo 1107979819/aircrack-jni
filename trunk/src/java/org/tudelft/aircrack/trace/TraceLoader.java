@@ -11,11 +11,11 @@ import org.codehaus.preon.Codecs;
 import org.codehaus.preon.DecodingException;
 import org.tudelft.aircrack.frame.Address;
 import org.tudelft.aircrack.frame.Frame;
-import org.tudelft.aircrack.frame.SubType;
 import org.tudelft.aircrack.frame.control.ControlFrame;
 import org.tudelft.aircrack.frame.control.RtsFrame;
 import org.tudelft.aircrack.frame.management.BeaconOrProbeResponse;
 import org.tudelft.aircrack.frame.management.ManagementFrame;
+import org.tudelft.aircrack.frame.management.ProbeRequest;
 
 public class TraceLoader
 {
@@ -53,7 +53,7 @@ public class TraceLoader
 		{
 			ret.add(loadFrame(input));
 			
-			if (ret.size()>=500)
+			if (ret.size()>=150)
 				break;
 		}
 		
@@ -71,9 +71,6 @@ public class TraceLoader
 					&& frame.getClass() != ControlFrame.class
 					&& frame.getClass() != ManagementFrame.class)
 				decoded++;
-			
-			if (frame.getFrameControl().getSubType()==SubType.ProbeRequest || frame.getFrameControl().getSubType()==SubType.ProbeResponse)
-				System.out.println(frame);
 			
 			packetCount++;
 		}
@@ -164,15 +161,14 @@ public class TraceLoader
 		
 		for (Frame frame : trace)
 		{
-			if (frame instanceof BeaconOrProbeResponse)
+			if (frame instanceof ProbeRequest)
 			{
-				BeaconOrProbeResponse beacon = (BeaconOrProbeResponse)frame;
-//				System.out.println(beacon);
+				System.out.println(frame);
 			}
 		}
 		
 		getDecodingStatistics(trace);
-//		getApStatistics(trace);
+		getApStatistics(trace);
 		
 	}
 

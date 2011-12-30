@@ -21,13 +21,13 @@ public class InformationElement
 	
 	// TODO check format
 	@BoundNumber(size="8")
-	private ElementId elementId;
+	public ElementId elementId;
 	
 	@BoundNumber(size="8")
-	private int length;
+	public int length;
 
 	@BoundList(size="length")
-	private byte[] data;
+	public byte[] data;
 	
 	public InformationElement()
 	{
