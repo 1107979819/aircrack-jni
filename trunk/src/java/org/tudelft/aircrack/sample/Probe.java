@@ -32,7 +32,7 @@ public class Probe
 		probeRequest.setSA(myMac);
 		probeRequest.setBSSID(Address.Broadcast);
 		probeRequest.setDuration(1 * 1000);
-		probeRequest.getElements().addElement(new InformationElement(ElementId.SSID, "Ziggo48E24"));
+		probeRequest.getElements().addElement(new InformationElement(ElementId.SSID, ""));
 		
 		// Transmit probe request
 		TransmitInfo transmitInfo = new TransmitInfo();
