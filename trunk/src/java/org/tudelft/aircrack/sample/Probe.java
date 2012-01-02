@@ -21,6 +21,8 @@ public class Probe
 	{
 		Interface iface = new Interface("mon0");
 		iface.open();
+		
+		// iface.setChannel(6);
 
 		Address myMac = new Address(new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06 });
 
@@ -30,7 +32,7 @@ public class Probe
 		probeRequest.setSA(myMac);
 		probeRequest.setBSSID(Address.Broadcast);
 		probeRequest.setDuration(1 * 1000);
-		probeRequest.getElements().addElement(new InformationElement(ElementId.SSID, ""));
+		probeRequest.getElements().addElement(new InformationElement(ElementId.SSID, "Ziggo48E24"));
 		
 		// Transmit probe request
 		TransmitInfo transmitInfo = new TransmitInfo();
@@ -38,9 +40,9 @@ public class Probe
 		
 		iface.write(rawFrame, transmitInfo);
 		
-		// Wait for responses during 10 seconds
+		// Wait for responses
 		long time = System.currentTimeMillis();
-		while (System.currentTimeMillis()-time < 10000)
+		while (System.currentTimeMillis()-time < 5000)
 		{
 			
 			try
@@ -55,9 +57,11 @@ public class Probe
 					
 					if (response.getAddress1().compareTo(myMac)==0)
 					{
+						System.out.println(((ProbeResponse) frame).getSequenceControl());
 						System.out.printf(
-								"%s | %4d dBm | %s \n",
+								"%s | %4d | %4d dBm | %s \n",
 								((ProbeResponse) frame).getBSSID().toString(),
+								frame.getReceiveInfo().getChannel(),
 								frame.getReceiveInfo().getPower(),
 								((ProbeResponse) frame).getSsid()
 								);

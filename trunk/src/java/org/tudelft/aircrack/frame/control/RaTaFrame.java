@@ -7,11 +7,16 @@ public class RaTaFrame extends RaFrame
 {
 
 	@Bound
-	protected Address TA;
+	public Address TA;
 
 	public Address getTA()
 	{
 		return TA;
+	}
+	
+	public void setTA(Address tA)
+	{
+		TA = tA;
 	}
 
 	@Override

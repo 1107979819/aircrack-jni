@@ -7,11 +7,16 @@ public class RaFrame extends ControlFrame
 {
 
 	@Bound
-	protected Address RA;
+	public Address RA;
 
 	public Address getRA()
 	{
 		return RA;
+	}
+	
+	public void setRA(Address rA)
+	{
+		RA = rA;
 	}
 
 	@Override

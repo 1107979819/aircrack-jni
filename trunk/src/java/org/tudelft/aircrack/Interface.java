@@ -64,18 +64,19 @@ public class Interface
 			_close(wif);
 	}
 	
-	public Frame receive() throws DecodingException
+	public synchronized Frame receive() throws DecodingException
 	{
 		ReceiveInfo receiveInfo = new ReceiveInfo();
 		int bytesRead = read(buffer, receiveInfo);
 		
-		byte[] buf = new byte[bytesRead];
-		System.arraycopy(buffer, 0, buf, 0, bytesRead);
-		
 		if (bytesRead==0)
 			return null;		
 		else
+		{
+			byte[] buf = new byte[bytesRead];
+			System.arraycopy(buffer, 0, buf, 0, bytesRead);
 			return Frame.decode(receiveInfo, buf);
+		}
 	}
 	
 	public int read(byte[] buffer)
@@ -93,14 +94,14 @@ public class Interface
 		return _read(wif, buffer, receiveInfo);
 	}
 	
-	public int write(byte[] buffer)
+	public synchronized int write(byte[] buffer)
 	{
 		TransmitInfo transmitInfo = new TransmitInfo();
 
 		return _write(wif, buffer, transmitInfo);
 	}
 
-	public int write(byte[] buffer, TransmitInfo transmitInfo) 
+	public synchronized int write(byte[] buffer, TransmitInfo transmitInfo) 
 	{
 		if (transmitInfo == null)
 			throw new NullPointerException("Transmit info object may not be null");

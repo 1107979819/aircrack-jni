@@ -2,12 +2,18 @@ package org.tudelft.aircrack.frame.control;
 
 import org.codehaus.preon.annotation.BoundNumber;
 import org.tudelft.aircrack.frame.Frame;
+import org.tudelft.aircrack.frame.FrameType;
 
 public class ControlFrame extends Frame
 {
 
 	@BoundNumber(size="16")
-	protected int durationOrAid;
+	public int durationOrAid;
+	
+	public ControlFrame()
+	{
+		frameControl.setType(FrameType.Control);
+	}
 	
 	public int getDuration()
 	{

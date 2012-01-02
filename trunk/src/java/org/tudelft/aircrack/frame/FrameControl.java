@@ -40,11 +40,6 @@ public class FrameControl
 	@Bound
 	public boolean order;
 	
-	public FrameControl()
-	{
-//		type = FrameType.Reserved;
-	}
-
 	@Override
 	public String toString()
 	{
@@ -141,9 +136,9 @@ public class FrameControl
 		this.retry = retry;
 	}
 	
-	public void setSubType(int subType)
+	public void setSubType(SubType subType)
 	{
-		this.subType = subType;
+		this.subType = subType.getSubType();
 	}
 	
 	public void setToDs(boolean toDs)

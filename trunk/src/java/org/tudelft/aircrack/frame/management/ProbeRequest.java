@@ -14,7 +14,7 @@ public class ProbeRequest extends ManagementFrame
 	
 	public ProbeRequest()
 	{
-		frameControl.setSubType(SubType.ProbeRequest.getSubType());
+		frameControl.setSubType(SubType.ProbeRequest);
 		elements = new InformationElements();
 	}
 
