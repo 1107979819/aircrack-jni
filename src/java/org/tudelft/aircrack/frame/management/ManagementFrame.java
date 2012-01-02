@@ -36,6 +36,11 @@ public class ManagementFrame extends Frame
 		return duration;
 	}
 	
+	public SequenceControl getSequenceControl()
+	{
+		return sequenceControl;
+	}
+	
 	public Address getAddress1()
 	{
 		return address1;
