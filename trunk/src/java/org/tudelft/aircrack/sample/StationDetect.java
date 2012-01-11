@@ -4,10 +4,9 @@ import java.io.IOException;
 
 import org.codehaus.preon.Codecs;
 import org.codehaus.preon.DecodingException;
-import org.tudelft.aircrack.Interface;
+import org.tudelft.aircrack.JniInterface;
 import org.tudelft.aircrack.frame.Address;
 import org.tudelft.aircrack.frame.Frame;
-import org.tudelft.aircrack.frame.Util;
 import org.tudelft.aircrack.frame.control.CtsFrame;
 import org.tudelft.aircrack.frame.control.RtsFrame;
 
@@ -17,7 +16,7 @@ public class StationDetect
 	public static void main(String[] args) throws DecodingException, IOException
 	{
 		
-		final Interface iface = new Interface("mon0");
+		final JniInterface iface = new JniInterface("mon0");
 		iface.open();
 		
 		// 00:26:37:3b:1e:e6

@@ -4,207 +4,150 @@ import org.codehaus.preon.DecodingException;
 import org.tudelft.aircrack.frame.Address;
 import org.tudelft.aircrack.frame.Frame;
 
-public class Interface
+public abstract class Interface
 {
 
 	private final static byte[] buffer = new byte[4096];
-	
-	static
-	{
-		System.loadLibrary("aircrack-ng-jni");
-	}
-	
-	// Interface name, i.e. 'mon0'.
-	private final String name;
-	
-	// Pointer to the wif struct that describes the interface once opened.
-	private long wif = 0;
-	
-	public Interface(String name)
-	{
-		this.name = name;
-	}
 
-	native static private long _open(String interfaceName);
-	native static private void _close(long wif);
-	native static private int _read(long wif, byte[] buffer, ReceiveInfo info);
-	native static private int _write(long wif, byte[] buffer, TransmitInfo info);
-	
-	native static private int _setChannel(long wif, int channel);
-	native static private int _getChannel(long wif);
+	/**
+	 * Opens the interface. This method must be called before any other operations
+	 * may be performed.
+	 */
+	public abstract void open();
 
-	native static private int _setFrequency(long wif, int freq);
-	native static private int _getFrequency(long wif);
-
-	native static private int _setMac(long wif, byte[] mac);
-	native static private int _getMac(long wif, byte[] mac);
-
-	native static private int _setRate(long wif, int rate);
-	native static private int _getRate(long wif);
+	/**
+	 * Closes the interface. After this method has been called, no other operations
+	 * may be performed on this interface
+	 */
+	public abstract void close();
 	
-	native static private int _getMonitor(long wif);
-	
-	native static private int _setMtu(long wif, int mtu);
-	native static private int _getMtu(long wif);
-	
-	public void open()
-	{
-		this.wif = _open(name);
-		
-		if (this.wif==0)
-			throw new WifiException("Unable to open interface: " + name);
-		
-	}
-	
-	public void close()
-	{
-		if (this.wif==0)
-			throw new WifiException("Interface is not open.");
-		else
-			_close(wif);
-	}
-	
+	/**
+	 * Receives a single 802.11 Frame. This method either returns a fully decoded 
+	 * Frame object, or null if there was an error receiving a frame. Note that this
+	 * method is blocking.
+	 * 
+	 * @return a decoded Frame object or null in case of error. 
+	 * 
+	 * @throws DecodingException
+	 */
 	public synchronized Frame receive() throws DecodingException
 	{
+	
+		// Create a new ReceiveInfo object
 		ReceiveInfo receiveInfo = new ReceiveInfo();
+		
+		// Read raw packet
 		int bytesRead = read(buffer, receiveInfo);
 		
+		// If bytesRead is returned as 0, there was a problem reading from the interface.
+		// Return null in this case.
 		if (bytesRead==0)
-			return null;		
+			return null;
 		else
 		{
+			// Copy the received frame into a new buffer with the correct size
 			byte[] buf = new byte[bytesRead];
 			System.arraycopy(buffer, 0, buf, 0, bytesRead);
+			
+			// Decode the frame
 			return Frame.decode(receiveInfo, buf);
 		}
 	}
+
+	/**
+	 * Reads a raw frame from the interface.
+	 * 
+	 * @param buffer byte buffer for reading into.
+	 * @param receiveInfo ReceiveInfo object for collecting information about how the packet was received (RSSI, channel, etc.) 
+	 * @return the length of the received frame.
+	 */
+	public abstract int read(byte[] buffer, ReceiveInfo receiveInfo);
+
+	/**
+	 * Writes a raw frame to the interface.
+	 * 
+	 * @param buffer byte buffer containing the raw frame.
+	 * @param transmitInfo TransmitInfo object describing how the frame should be sent (rate).
+	 * 
+	 * @return the number of bytes written.
+	 */
+	public abstract int write(byte[] buffer, TransmitInfo transmitInfo); 
+
+	/**
+	 * Sets the channel of the interface.
+	 * 
+	 * @param channel 802.11 channel. 
+	 */
+	public abstract void setChannel(int channel);
 	
-	public int read(byte[] buffer)
-	{
-		ReceiveInfo receiveInfo = new ReceiveInfo();
-		
-		return _read(wif, buffer, receiveInfo);
-	}
+	/**
+	 * Gets the channel of the interface.
+	 * 
+	 * @return channel 802.11 channel. 
+	 */
+	public abstract int getChannel();
 
-	public int read(byte[] buffer, ReceiveInfo receiveInfo)
-	{
-		if (receiveInfo==null)
-			throw new NullPointerException("Receive info object may not be null");
-		
-		return _read(wif, buffer, receiveInfo);
-	}
+	/**
+	 * Sets the frequency of the interface.
+	 * 
+	 * @param frequency frequency. 
+	 */
+	public abstract void setFrequency(int freq);
 	
-	public synchronized int write(byte[] buffer)
-	{
-		TransmitInfo transmitInfo = new TransmitInfo();
+	/**
+	 * Gets the frequency of the interface.
+	 * 
+	 * @return frequency. 
+	 */
+	public abstract int getFrequency();
 
-		return _write(wif, buffer, transmitInfo);
-	}
-
-	public synchronized int write(byte[] buffer, TransmitInfo transmitInfo) 
-	{
-		if (transmitInfo == null)
-			throw new NullPointerException("Transmit info object may not be null");
-
-		return _write(wif, buffer, transmitInfo);
-	}
-
-	public void setChannel(int channel)
-	{
-		_setChannel(wif, channel);
-	}
+	/**
+	 * Sets the MAC address of the interface.
+	 * 
+	 * @param address MAC address. 
+	 */
+	public abstract void setMac(Address address);
 	
-	public int getChannel()
-	{
-		return _getChannel(wif);
-	}
+	/**
+	 * Gets the MAC address of the interface.
+	 * 
+	 * @return MAC address. 
+	 */
+	public abstract Address getMac();
 
-	public void setFrequency(int freq)
-	{
-		// TODO check return value? Fails on some cards?
-		_setFrequency(wif, freq);
-	}
+	/**
+	 * Sets the rate of the interface.
+	 * 
+	 * @param rate rate 
+	 */
+	public abstract void setRate(int rate);
 	
-	public int getFrequency()
-	{
-		return _getFrequency(wif);
-	}
+	/**
+	 * Gets the rate of the interface.
+	 * 
+	 * @return rate 
+	 */
+	public abstract int getRate();
 
-	public void setMac(Address address)
-	{
-		// TODO check return value? Fails on some cards?
-		_setMac(wif, address.getAddress());
-	}
+	/**
+	 * Gets the monitor of the interface.
+	 * 
+	 * @return monitor of the interface.
+	 */
+	public abstract int getMonitor();
 	
-	public Address getMac()
-	{
-		byte[] ret = new byte[6];
-		_getMac(wif, ret);
-		return new Address(ret);
-	}
+	/**
+	 * Sets the MTU (maximum transmission unit) of the interface.
+	 * 
+	 * @param mtu maximum transmission unit in bytes
+	 */
+	public abstract void setMtu(int mtu);
+	
+	/**
+	 * Gets the MTU (maximum transmission unit) of the interface.
+	 * 
+	 * @return maximum transmission unit in bytes
+	 */
+	public abstract int getMtu();
 
-	public void setRate(int rate)
-	{
-		// TODO check return value? Fails on some cards?
-		_setRate(rate, rate);
-	}
-	
-	public int getRate()
-	{
-		return _getRate(wif);
-	}
-	
-	public int getMonitor()
-	{
-		return _getMonitor(wif);
-	}
-	
-	public void setMtu(int mtu)
-	{
-		_setMtu(mtu, mtu);
-	}
-	
-	public int getMtu()
-	{
-		return _getMtu(wif);
-	}
-
-	public static void main(String args[])
-	{
-		Interface iface = new Interface("mon0");
-		iface.open();
-
-		// capture packets
-		for (int i=0; i<100; i++)
-		{
-			byte[] buffer = new byte[4096];
-			
-			ReceiveInfo receiveInfo = new ReceiveInfo();
-			int bytesRead = iface.read(buffer, receiveInfo);
-			
-			try
-			{
-				Frame frame = Frame.decode(receiveInfo, buffer);				
-				System.out.println(frame);
-				
-			} catch (DecodingException e)
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-		}
-		
-		// inject packets
-//		for (int i=0; i<100; i++) 
-//		{
-//			String str = "The spagetti monster ate " + i + " plates of pasta";
-//		
-//			TransmitInfo transmitInfo = new TransmitInfo();
-//			
-//			System.out.println(iface.write(str.getBytes(), transmitInfo));
-//		}
-		
-		iface.close();
-	}	
 }

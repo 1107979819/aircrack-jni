@@ -1,7 +1,7 @@
 package org.tudelft.aircrack.sample;
 
 import org.codehaus.preon.DecodingException;
-import org.tudelft.aircrack.Interface;
+import org.tudelft.aircrack.JniInterface;
 import org.tudelft.aircrack.frame.Frame;
 import org.tudelft.aircrack.frame.management.ProbeRequest;
 
@@ -11,7 +11,7 @@ public class Amr
 	public static void main(String[] args) throws DecodingException
 	{
 		
-		Interface iface = new Interface("mon0");
+		JniInterface iface = new JniInterface("mon0");
 		iface.open();
 
 		while (true)
