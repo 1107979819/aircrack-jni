@@ -27,8 +27,11 @@ public class FrameBodyCodec implements Codec<Object>
 	@Override
 	public void encode(Object body, BitChannel channel, Resolver resolver) throws IOException
 	{
-		byte[] buf = (byte[])body;
-		channel.write(buf, 0, buf.length);
+		if (body!=null)
+		{
+			byte[] buf = (byte[])body;
+			channel.write(buf, 0, buf.length);
+		}
 	}
 
 	@Override

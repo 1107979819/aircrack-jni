@@ -43,11 +43,23 @@ public class FrameControl
 	@Override
 	public String toString()
 	{
+		String flags = "";
+		
+		if (toDs) flags += "toDs ";
+		if (fromDs) flags += "fromDs ";
+		if (moreFrag) flags += "moreFrag ";
+		if (retry) flags += "retry ";
+		if (powerMgt) flags += "powerMgt ";
+		if (moreData) flags += "moreData ";
+		if (WEP) flags += "WEP ";
+		if (order) flags += "order ";
+		
 		return String.format(
-				"FrameControl[protocol=%d, type=%d/%s, subType=%d/%s]",
+				"FrameControl[protocol=%d, type=%d/%s, subType=%d/%s, flags=%s]",
 				protocolVersion,
 				type.ordinal(), getType().toString(),
-				subType, getSubType().toString()
+				subType, getSubType().toString(),
+				flags.trim()
 				);
 	}
 	

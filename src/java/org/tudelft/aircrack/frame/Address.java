@@ -1,12 +1,17 @@
 package org.tudelft.aircrack.frame;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.codehaus.preon.annotation.BoundList;
 
 public class Address implements Comparable<Address>
 {
 
 	public final static Address Broadcast = new Address(new byte[] { (byte)0xff, (byte)0xff, (byte)0xff, (byte)0xff, (byte)0xff, (byte)0xff }); 
-	public final static Address Zero = new Address(new byte[] { 0, 0, 0, 0, 0, 0 }); 
+	public final static Address Zero = new Address(new byte[] { 0, 0, 0, 0, 0, 0 });
+	
+	private final static Pattern addressPattern = Pattern.compile("([0-9a-fA-F]{2}):([0-9a-fA-F]{2}):([0-9a-fA-F]{2}):([0-9a-fA-F]{2}):([0-9a-fA-F]{2}):([0-9a-fA-F]{2})");
 	
 	@BoundList(size="6")
 	public byte[] address;
@@ -23,6 +28,19 @@ public class Address implements Comparable<Address>
 		this.address = new byte[address.length];
 		for (int i=0; i<address.length; i++)
 			this.address[i] = address[i];
+	}
+	
+	public Address(String address)
+	{
+		Matcher matcher = addressPattern.matcher(address);
+		
+		if (matcher.matches())
+		{
+			this.address = new byte[6];
+			for (int i=0; i<matcher.groupCount(); i++)
+				this.address[i] = (byte)Integer.parseInt(matcher.group(i+1), 16);
+		} else
+			throw new IllegalArgumentException("Not a properly formatted MAC address: " + address);
 	}
 	
 	public byte[] getAddress()
