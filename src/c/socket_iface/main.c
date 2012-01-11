@@ -7,86 +7,139 @@
 #include <sys/socket.h>
 #include <sys/un.h>
 
+#include "osdep.h"
+
 #include "message.h"
 
-int socket_make_sockaddr_un(const char *name, struct sockaddr_un *p_addr, socklen_t *alen)
+#define SOCKET_ADRESS "echo"
+#define RX_BUFFER_SIZE 5000
+
+void createSocketAddress(const char *name, struct sockaddr_un *address, socklen_t * length)
 {
-    memset (p_addr, 0, sizeof (*p_addr));
-    size_t namelen;
+	// Zero out the address struct
+    memset(address, 0, sizeof (*address));
 
-    namelen  = strlen(name);
+    address->sun_family = AF_LOCAL;
 
-    // Test with length +1 for the *initial* '\0'.
-    if ((namelen + 1) > sizeof(p_addr->sun_path))
-    	return -1;
+    // Copy the socket name into the address struct.
+    // Note that we're using the Linux abstract namespace, hence the leading zero-byte.
+    memcpy(address->sun_path + 1, name, strlen(name));
+    address->sun_path[0] = 0;
 
-    p_addr->sun_path[0] = 0;
-    memcpy(p_addr->sun_path + 1, name, namelen);
-
-    p_addr->sun_family = AF_LOCAL;
-
-    *alen = namelen + offsetof(struct sockaddr_un, sun_path) + 1;
-
-    return 0;
+    * length = strlen(name) + offsetof(struct sockaddr_un, sun_path) + 1;
 }
 
-/**
- * Binds a pre-created socket(AF_LOCAL) 's' to 'name'
- * returns 's' on success, -1 on fail
- *
- * Does not call listen()
- */
-int socket_local_server_bind(int s, const char *name)
+int setupSocket(const char * name)
 {
-    struct sockaddr_un addr;
-    socklen_t alen;
-    int n;
-    int err;
+	int n = 1, err;
+	int serverSocket;
+	socklen_t alen;
 
-    err = socket_make_sockaddr_un(name, &addr, &alen);
-
-    if (err < 0)
-    {
-        return -1;
-    }
-
-    n = 1;
-    setsockopt(s, SOL_SOCKET, SO_REUSEADDR, &n, sizeof(n));
-
-    if(bind(s, (struct sockaddr *) &addr, alen) < 0) {
-        return -1;
-    }
-
-    return s;
-
-}
-
-int main()
-{
-
-	int serverSocket, s2, t;
-	int i;
-	char str[100];
-
-	// Remove connection address
-	struct sockaddr_un remote;
-	
 	// Server socket address
 	struct sockaddr_un address;
 
-	// Create
+	// Create socket
 	if ((serverSocket = socket(AF_LOCAL, SOCK_STREAM, 0)) == -1)
 	{
 		perror("socket");
 		exit(1);
 	}
 
-    int err = socket_local_server_bind(serverSocket, "echo");
-    printf(">>>>>%d\n", err);
+	createSocketAddress(name, &address, &alen);
 
-	if (err < 0)
-	{
+	// Re-use address (needed?)
+    setsockopt(serverSocket, SOL_SOCKET, SO_REUSEADDR, &n, sizeof(n));
+
+	// Bind to address
+    err = bind(serverSocket, (struct sockaddr *) &address, alen);
+    if (err < 0)
+    {
 		perror("bind");
+    	exit(2);
+    }
+
+    return serverSocket;
+
+}
+
+void handleMessage(struct wif * wi, Message * message)
+{
+
+	switch (message->methodId)
+	{
+
+	case Read:
+		break;
+
+	case Write:
+		break;
+
+	case SetChannel:
+
+		wi_set_channel(wi, message->argument);
+
+		break;
+
+	case GetChannel:
+		break;
+
+	case SetFrequency:
+		break;
+
+	case GetFrequency:
+		break;
+
+	case SetMac:
+		break;
+
+	case GetMac:
+		break;
+
+	case SetRate:
+		break;
+
+	case GetRate:
+		break;
+
+	case GetMonitor:
+		break;
+
+	case SetMtu:
+		break;
+
+	case GetMtu:
+		break;
+
+	}
+
+}
+
+int main()
+{
+
+	int serverSocket;
+	int i, t;
+
+	struct sockaddr_un remote;
+
+	char receiveBuffer[RX_BUFFER_SIZE];
+
+	int clientSocket;
+
+	// Init aircrack
+	struct wif * wi;
+	struct rx_info rxi;
+
+	wi = wi_open("mon0");
+
+	// Channel 11
+	wi_set_channel(wi, 11);
+	printf("CHANNEL: %d\n", wi_get_channel(wi));
+
+	serverSocket = setupSocket(SOCKET_ADRESS);
+
+	if (serverSocket < 0)
+	{
 		exit(1);
 	}
 
@@ -100,8 +153,9 @@ int main()
 	{
 		int done, n;
 		printf("Waiting for a connection... on [echo]\n");
+
 		t = sizeof(remote);
-		if ((s2 = accept(serverSocket, (struct sockaddr *) &remote, &t)) == -1)
+		if ((clientSocket = accept(serverSocket, (struct sockaddr *) &remote, &t)) == -1)
 		{
 			perror("accept");
 			exit(1);
@@ -112,41 +166,31 @@ int main()
 		done = 0;
 		do
 		{
-			n = recv(s2, str, 100, 0);
 
-			Message message;
-
-			for (i=0; i<n; i++)
-				printf("%d\n", str[i]);
-
-			memcpy(&message, str, sizeof(Message));
-
-			printf("len: %d, %d\n", n, sizeof(Message));
-
-			printf("Method id: %d, argument: %d, payloadLength: %d\n",
-					message.methodId,
-					message.argument,
-					message.payloadLength
-				);
+			int length = recv(clientSocket, receiveBuffer, RX_BUFFER_SIZE, 0);
 
 			if (n <= 0)
 			{
 				if (n < 0)
 					perror("recv");
+
 				done = 1;
+				continue;
 			}
 
-			if (!done)
-				if (send(s2, str, n, 0) < 0)
-				{
-					perror("send");
-					done = 1;
-				}
+			// Unpack message
+			Message message;
+			memcpy(&message, receiveBuffer, sizeof(Message));
+
+			handleMessage(wi, &message);
+
 
 		} while (!done);
 
-		close(s2);
+		close(clientSocket);
 	}
+
+	printf("EXIT.\n");
 
 	return 0;
 }
