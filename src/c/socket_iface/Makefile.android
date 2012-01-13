@@ -1,15 +1,18 @@
+# Android NDK location
 NDK=/home/niels/android-ndk-r7
 TOOLCHAIN=${NDK}/toolchains/arm-linux-androideabi-4.4.3/prebuilt/linux-x86/bin
+
+OSDEP=../aircrack-ng/src/osdep
 CC=${TOOLCHAIN}/arm-linux-androideabi-gcc
-CFLAGS=-Iaircrack-ng/src/osdep -DLinux -DAIRCRACK_NG_BYTE_ORDER_DEFINED --sysroot ${NDK}/platforms/android-4/arch-arm/ -fPIC -mandroid -DANDROID -DOS_ANDROID 
-LFLAGS=--sysroot ${NDK}/platforms/android-4/arch-arm/ -fPIC -mandroid -DANDROID -DOS_ANDROID 
-NAME=socket_test
+CFLAGS=--sysroot ${NDK}/platforms/android-4/arch-arm/ -I${OSDEP} -DLinux  -D__int8_t_defined -DAIRCRACK_NG_BYTE_ORDER_DEFINED -fPIC -mandroid -DANDROID -DOS_ANDROID -DLinux
+LFLAGS=--sysroot ${NDK}/platforms/android-4/arch-arm/ -fPIC -mandroid -DANDROID -DOS_ANDROID -DLinux
+NAME=aircrack_service
 
 CFILES=main.c
 OFILES=${CFILES:.c=.o}
 
 all: ${OFILES}
-	${CC} ${LFLAGS} ${OFILES} -o ${NAME}
+	${CC} ${LFLAGS} ${OFILES} ${OSDEP}/libosdep.a -o ${NAME}
 
 %.o: %.c
 	${CC} ${CFLAGS} -c $< -o ${<:.c=.o}
