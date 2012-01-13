@@ -6,6 +6,6 @@ public class Timestamp
 {
 	
 	@BoundList(size="8")
-	private byte[] timestamp;	
+	private byte[] timestamp;
 
 }

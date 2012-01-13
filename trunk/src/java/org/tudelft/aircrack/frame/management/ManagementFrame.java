@@ -2,6 +2,7 @@ package org.tudelft.aircrack.frame.management;
 
 import org.codehaus.preon.annotation.Bound;
 import org.codehaus.preon.annotation.BoundNumber;
+import org.codehaus.preon.annotation.Order;
 import org.tudelft.aircrack.frame.Address;
 import org.tudelft.aircrack.frame.Frame;
 import org.tudelft.aircrack.frame.FrameType;
@@ -11,19 +12,19 @@ public class ManagementFrame extends Frame
 {
 
 	@BoundNumber(size="16")
-	public int duration;
+	@Order(1) public int duration;
 	
 	@Bound
-	public Address address1 = Address.Broadcast;
+	@Order(2) public Address address1 = Address.Broadcast;
 
 	@Bound
-	public Address SA = Address.Zero;
+	@Order(3) public Address SA = Address.Zero;
 	
 	@Bound
-	public Address BSSID = Address.Broadcast;
+	@Order(4) public Address BSSID = Address.Broadcast;
 	
 	@Bound
-	public SequenceControl sequenceControl = new SequenceControl();
+	@Order(5) public SequenceControl sequenceControl = new SequenceControl();
 	
 	public ManagementFrame()
 	{

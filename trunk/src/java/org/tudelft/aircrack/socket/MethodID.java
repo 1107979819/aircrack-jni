@@ -6,42 +6,48 @@ public enum MethodID
 {
 	
 	@BoundEnumOption(value = 0)
-	Read,
+	Open,
 	
 	@BoundEnumOption(value = 1)
-	Write,
+	Close,
 	
 	@BoundEnumOption(value = 2)
-	SetChannel,
+	Read,
 	
 	@BoundEnumOption(value = 3)
-	GetChannel,
+	Write,
 	
 	@BoundEnumOption(value = 4)
-	SetFrequency,
+	SetChannel,
 	
 	@BoundEnumOption(value = 5)
-	GetFrequency,
+	GetChannel,
 	
 	@BoundEnumOption(value = 6)
-	SetMac,
+	SetFrequency,
 	
 	@BoundEnumOption(value = 7)
-	GetMac,
+	GetFrequency,
 	
 	@BoundEnumOption(value = 8)
-	SetRate,
+	SetMac,
 	
 	@BoundEnumOption(value = 9)
-	GetRate,
+	GetMac,
 	
 	@BoundEnumOption(value = 10)
-	GetMonitor,
+	SetRate,
 	
 	@BoundEnumOption(value = 11)
-	SetMtu,
+	GetRate,
 	
 	@BoundEnumOption(value = 12)
+	GetMonitor,
+	
+	@BoundEnumOption(value = 13)
+	SetMtu,
+	
+	@BoundEnumOption(value = 14)
 	GetMtu
 
 }

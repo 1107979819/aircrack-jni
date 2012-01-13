@@ -1,30 +1,31 @@
 package org.tudelft.aircrack;
 
 import org.codehaus.preon.annotation.BoundNumber;
+import org.codehaus.preon.annotation.Order;
 
 public class ReceiveInfo
 {
 	
 	@BoundNumber(size="64")
-	private long macTime;
+	@Order(1) public long macTime;
 
 	@BoundNumber(size="32")
-	private int power;
+	@Order(2) public int power;
 
 	@BoundNumber(size="32")
-	private int noise;
+	@Order(3) public int noise;
 
 	@BoundNumber(size="32")
-	private int channel;
+	@Order(4) public int channel;
 
 	@BoundNumber(size="32")
-	private int frequency;
+	@Order(5) public int frequency;
 
 	@BoundNumber(size="32")
-	private int rate;
+	@Order(6) public int rate;
 	
 	@BoundNumber(size="32")
-	private int antenna;
+	@Order(7) public int antenna;
 	
 	public ReceiveInfo()
 	{

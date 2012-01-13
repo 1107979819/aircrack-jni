@@ -2,6 +2,7 @@ package org.tudelft.aircrack.frame.management.field;
 
 import org.codehaus.preon.annotation.BoundList;
 import org.codehaus.preon.annotation.BoundNumber;
+import org.codehaus.preon.annotation.Order;
 
 
 /**
@@ -21,13 +22,13 @@ public class InformationElement
 	
 	// TODO check format
 	@BoundNumber(size="8")
-	public ElementId elementId;
+	@Order(1) public ElementId elementId;
 	
 	@BoundNumber(size="8")
-	public int length;
+	@Order(2) public int length;
 
 	@BoundList(size="length")
-	public byte[] data;
+	@Order(3) public byte[] data;
 	
 	public InformationElement()
 	{

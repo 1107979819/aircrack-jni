@@ -3,6 +3,7 @@ package org.tudelft.aircrack.frame.data;
 import org.codehaus.preon.annotation.Bound;
 import org.codehaus.preon.annotation.BoundNumber;
 import org.codehaus.preon.annotation.If;
+import org.codehaus.preon.annotation.Order;
 import org.codehaus.preon.el.ImportStatic;
 import org.tudelft.aircrack.frame.Address;
 import org.tudelft.aircrack.frame.Frame;
@@ -16,30 +17,30 @@ public class DataFrame extends Frame
 {
 	
 	@BoundNumber(size="16")
-	private int duration;
+	@Order(1) private int duration;
 	
 	@Bound
-	private Address address1;
+	@Order(2) private Address address1;
 
 	@Bound
-	private Address address2;
+	@Order(3) private Address address2;
 	
 	@Bound
-	private Address address3;
+	@Order(4) private Address address3;
 	
 	@Bound
-	private SequenceControl sequenceControl;
+	@Order(5) private SequenceControl sequenceControl;
 
 	@If("frameControl.subType < 4 || (frameControl.subType >= 8 && frameControl.subType < 12)")
 	@Bound
-	private Address address4;
+	@Order(6) private Address address4;
 	
 	@If("frameControl.subType >= 8")
 	@Bound
-	private QualityOfServiceControl qualityOfServiceControl;
+	@Order(7) private QualityOfServiceControl qualityOfServiceControl;
 	
 	@FrameBody
-	private byte[] body;
+	@Order(8) private byte[] body;
 
 	public int getDuration()
 	{
