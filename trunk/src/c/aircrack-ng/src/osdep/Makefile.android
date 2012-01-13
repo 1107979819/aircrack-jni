@@ -1,13 +1,16 @@
+# Android NDK location
 NDK=/home/niels/android-ndk-r7
 TOOLCHAIN=${NDK}/toolchains/arm-linux-androideabi-4.4.3/prebuilt/linux-x86/bin
-CC=${TOOLCHAIN}/arm-linux-androideabi-gcc --sysroot ${NDK}/platforms/android-4/arch-arm/ -fPIC -mandroid -DANDROID -DOS_ANDROID
-CFLAGS=-I.. -D__int8_t_defined -DAIRCRACK_NG_BYTE_ORDER_DEFINED
+
+CC=${TOOLCHAIN}/arm-linux-androideabi-gcc --sysroot ${NDK}/platforms/android-8/arch-arm/
+CFLAGS=-I.. -D__int8_t_defined -fPIC -mandroid -DANDROID -DOS_ANDROID -DLinux
+#-DAIRCRACK_NG_BYTE_ORDER_DEFINED 
 
 CFILES=osdep.c network.c file.c linux.c linux_tap.c radiotap/radiotap-parser.c common.c
 OFILES=${CFILES:.c=.o}
 
 all: ${OFILES}
-	ar cru libosdep.a  osdep.o network.o file.o linux.o linux_tap.o radiotap/radiotap-parser.o common.o
+	ar cru libosdep.a ${OFILES}
 	ranlib libosdep.a
 	
 %.o: %.c
