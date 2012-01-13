@@ -1,15 +1,16 @@
 package org.tudelft.aircrack.frame.control.field;
 
 import org.codehaus.preon.annotation.BoundNumber;
+import org.codehaus.preon.annotation.Order;
 
 public class BlockAckControl
 {
 	
 	@BoundNumber(size="12")
-	private int reserved;
+	@Order(1) private int reserved;
 	
 	@BoundNumber(size="4")
-	private int tid;
+	@Order(2) private int tid;
 	
 	public int getTid()
 	{

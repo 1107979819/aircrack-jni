@@ -2,43 +2,44 @@ package org.tudelft.aircrack.frame;
 
 import org.codehaus.preon.annotation.Bound;
 import org.codehaus.preon.annotation.BoundNumber;
+import org.codehaus.preon.annotation.Order;
 import org.codehaus.preon.buffer.ByteOrder;
 
 public class FrameControl
 {
 
 	@BoundNumber(size="4", byteOrder = ByteOrder.BigEndian)
-	public int subType;
+	@Order(1) public int subType;
 
 	@BoundNumber(size="2", byteOrder = ByteOrder.BigEndian)
-	public FrameType type = FrameType.Reserved;
+	@Order(2) public FrameType type = FrameType.Reserved;
 
 	@BoundNumber(size="2", byteOrder = ByteOrder.BigEndian)
-	public int protocolVersion = 0;
+	@Order(3) public int protocolVersion = 0;
 	
 	@Bound
-	public boolean toDs;
+	@Order(4) public boolean toDs;
 	
 	@Bound
-	public boolean fromDs;
+	@Order(5) public boolean fromDs;
 	
 	@Bound
-	public boolean moreFrag;
+	@Order(6) public boolean moreFrag;
 	
 	@Bound
-	public boolean retry;
+	@Order(7) public boolean retry;
 	
 	@Bound
-	public boolean powerMgt;
+	@Order(8) public boolean powerMgt;
 	
 	@Bound
-	public boolean moreData;
+	@Order(9) public boolean moreData;
 	
 	@Bound
-	public boolean WEP;
+	@Order(10) public boolean WEP;
 	
 	@Bound
-	public boolean order;
+	@Order(11) public boolean order;
 	
 	@Override
 	public String toString()

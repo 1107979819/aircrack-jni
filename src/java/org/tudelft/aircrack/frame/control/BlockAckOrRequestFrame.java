@@ -1,6 +1,7 @@
 package org.tudelft.aircrack.frame.control;
 
 import org.codehaus.preon.annotation.Bound;
+import org.codehaus.preon.annotation.Order;
 import org.tudelft.aircrack.frame.control.field.BlockAckControl;
 import org.tudelft.aircrack.frame.control.field.BlockAckStartingSequence;
 
@@ -8,10 +9,10 @@ public class BlockAckOrRequestFrame extends RaTaFrame
 {
 
 	@Bound
-	private BlockAckControl blockAckControl;
+	@Order(1) private BlockAckControl blockAckControl;
 
 	@Bound
-	private BlockAckStartingSequence blockAckStartingSequence;
+	@Order(2) private BlockAckStartingSequence blockAckStartingSequence;
 
 	public BlockAckControl getBlockAckControl()
 	{

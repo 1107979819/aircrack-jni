@@ -1,6 +1,7 @@
 package org.tudelft.aircrack.frame.management.field;
 
 import org.codehaus.preon.annotation.Bound;
+import org.codehaus.preon.annotation.Order;
 
 /**
  * 
@@ -15,51 +16,51 @@ public class Capability
 {
 	
 	@Bound
-	boolean ess;
+	@Order(1) boolean ess;
 	
 	@Bound
-	boolean ibss;
+	@Order(2) boolean ibss;
 	
 	@Bound
-	boolean cfPollable;
+	@Order(3) boolean cfPollable;
 	
 	@Bound
-	boolean cfPollRequest;
+	@Order(4) boolean cfPollRequest;
 	
 	@Bound
-	boolean privacy;
+	@Order(5) boolean privacy;
 	
 	@Bound
-	boolean shortPreamble;
+	@Order(6) boolean shortPreamble;
 	
 	@Bound
-	boolean pbcc;
+	@Order(7) boolean pbcc;
 	
 	@Bound
-	boolean channelAgility;
+	@Order(8) boolean channelAgility;
 	
 	@Bound
-	boolean spectrumManagement;
+	@Order(9) boolean spectrumManagement;
 	
 	@Bound
-	boolean qos;
+	@Order(10) boolean qos;
 	
 	@Bound
-	boolean shortSlotTime;
+	@Order(11) boolean shortSlotTime;
 	
 	@Bound
-	boolean apsd;
+	@Order(12) boolean apsd;
 	
 	@Bound
-	boolean reserved1;
+	@Order(13) boolean reserved1;
 	
 	@Bound
-	boolean dsssOfdm;
+	@Order(14) boolean dsssOfdm;
 	
 	@Bound
-	boolean delayedBlockAck;
+	@Order(15) boolean delayedBlockAck;
 	
 	@Bound
-	boolean immediateBlockAck;
+	@Order(16) boolean immediateBlockAck;
 	
 }

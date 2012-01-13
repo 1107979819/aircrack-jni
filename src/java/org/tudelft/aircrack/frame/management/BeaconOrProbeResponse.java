@@ -2,6 +2,7 @@ package org.tudelft.aircrack.frame.management;
 
 import org.codehaus.preon.annotation.Bound;
 import org.codehaus.preon.annotation.BoundNumber;
+import org.codehaus.preon.annotation.Order;
 import org.tudelft.aircrack.frame.Timestamp;
 import org.tudelft.aircrack.frame.management.field.Capability;
 import org.tudelft.aircrack.frame.management.field.ElementId;
@@ -18,16 +19,16 @@ public class BeaconOrProbeResponse extends ManagementFrame
 {
 
 	@Bound
-	private Timestamp timestamp;
+	@Order(1) private Timestamp timestamp;
 	
 	@BoundNumber(size="16")
-	private int beaconInterval;
+	@Order(2) private int beaconInterval;
 
 	@Bound
-	private Capability capability;
+	@Order(3) private Capability capability;
 	
 	@Bound
-	private InformationElements elements;
+	@Order(4) private InformationElements elements;
 	
 	public Capability getCapability()
 	{

@@ -1,46 +1,43 @@
 package org.tudelft.aircrack.socket;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 import org.codehaus.preon.Codec;
 import org.codehaus.preon.Codecs;
+import org.codehaus.preon.DecodingException;
 import org.tudelft.aircrack.Interface;
+import org.tudelft.aircrack.InterfaceException;
 import org.tudelft.aircrack.ReceiveInfo;
 import org.tudelft.aircrack.TransmitInfo;
 import org.tudelft.aircrack.frame.Address;
-import org.tudelft.aircrack.frame.data.field.FrameBodyCodecFactory;
+import org.tudelft.aircrack.frame.Frame;
 
-import com.etsy.net.JUDS;
-import com.etsy.net.UnixDomainSocketClient;
-
-public class SocketInterface extends Interface
+public abstract class SocketInterface extends Interface
 {
 
-	private String socketAddress;
-	private UnixDomainSocketClient socket;
+	protected final String interfaceName, socketAddress;
 	
-	private final static Codec<SocketMessage> messageCodec = Codecs.create(SocketMessage.class, new FrameBodyCodecFactory());
+	protected InputStream input;
+	protected OutputStream output;
+
+	private final byte replyBuffer[] = new byte[5000];
 	
-	public SocketInterface(String socketAddress)
+	private Codec<SocketMessage> messageCodec;
+	
+	public SocketInterface(String interfaceName, String socketAddress)
 	{
+		this.interfaceName = interfaceName;
 		this.socketAddress = socketAddress;
 		
+		this.messageCodec = Codecs.create(SocketMessage.class);
 	}
 	
-	public static void main(String[] args)
-	{
-		
-		String socketAddress = "@echo";
-		
-		SocketInterface iface = new SocketInterface(socketAddress);
-		iface.open();
-			
-		iface.sendMessage(new SocketMessage(MethodID.SetChannel, 11));
-		
-		iface.close();
-	}
+	protected abstract void openSocket() throws IOException;
+	protected abstract void closeSocket() throws IOException;
 	
-	protected void sendMessage(SocketMessage message)
+	protected SocketMessage sendMessage(SocketMessage message)
 	{
 		try
 		{
@@ -48,12 +45,26 @@ public class SocketInterface extends Interface
 			byte[] raw = Codecs.encode(message, messageCodec);
 			
 			// Send the encoded message over the socket
-			socket.getOutputStream().write(raw);
+			output.write(raw);
+			output.flush();
+
+			// Read reply
+			input.read(replyBuffer);
+			SocketMessage result = Codecs.decode(messageCodec, replyBuffer);
 			
+			// Check the result code
+			if (result.argument==-1)
+				throw new InterfaceException(result.getPayloadAsString());
+			else
+				return result;
 			
 		} catch (IOException e)
 		{
-			throw new RuntimeException(e);
+			throw new InterfaceException(e);
+		}
+		catch (DecodingException e)
+		{
+			throw new InterfaceException(e);
 		}
 	}
 
@@ -63,7 +74,11 @@ public class SocketInterface extends Interface
 	{
 		try
 		{
-			socket = new UnixDomainSocketClient(socketAddress, JUDS.SOCK_STREAM);
+			openSocket();
+			
+			// Send an 'open' message
+			sendMessage(new SocketMessage(MethodID.Open, interfaceName));
+			
 		} catch (IOException e)
 		{
 			throw new RuntimeException(e);
@@ -73,15 +88,46 @@ public class SocketInterface extends Interface
 	@Override
 	public void close()
 	{
-		socket.close();
+		try
+		{
+			// Send a 'close' message
+			sendMessage(new SocketMessage(MethodID.Close));
+
+			closeSocket();
+			
+		} catch (IOException e)
+		{
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public synchronized Frame receive() throws DecodingException
+	{
+		SocketMessage result = sendMessage(new SocketMessage(MethodID.Read));
+
+		// If bytesRead is returned as 0, there was a problem reading from the interface.
+		// Return null in this case.
+		if (result.argument == 0)
+			return null;
+		else
+		{
+			// Decode the frame
+			return Frame.decode(result.receiveInfo, result.payload);
+		}
 	}
 
 	@Override
 	public int read(byte[] buffer, ReceiveInfo receiveInfo)
 	{
-		SocketMessage message = new SocketMessage(MethodID.Read, buffer);
+		SocketMessage result = sendMessage(new SocketMessage(MethodID.Read));
 		
-		return 0;
+		System.out.println(result.receiveInfo);
+		
+		// Copy payload
+		System.arraycopy(result.payload, 0, buffer, 0, result.argument);
+		
+		return result.argument;
 	}
 
 	@Override
@@ -93,23 +139,25 @@ public class SocketInterface extends Interface
 	@Override
 	public void setChannel(int channel)
 	{
+		sendMessage(new SocketMessage(MethodID.SetChannel, channel));
 	}
 
 	@Override
 	public int getChannel()
 	{
-		return 0;
+		return sendMessage(new SocketMessage(MethodID.GetChannel)).argument; 
 	}
 
 	@Override
 	public void setFrequency(int freq)
 	{
+		sendMessage(new SocketMessage(MethodID.SetFrequency, freq));
 	}
 
 	@Override
 	public int getFrequency()
 	{
-		return 0;
+		return sendMessage(new SocketMessage(MethodID.GetFrequency)).argument; 
 	}
 
 	@Override
