@@ -2,7 +2,7 @@ OSDEP=../aircrack-ng/src/osdep/
 CC=gcc
 CFLAGS=-I${OSDEP} -DLinux -DAIRCRACK_NG_BYTE_ORDER_DEFINED -fPIC -DLinux
 LFLAGS=
-NAME=socket_test
+NAME=aircrack_service
 
 CFILES=main.c
 OFILES=${CFILES:.c=.o}

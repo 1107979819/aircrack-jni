@@ -3,7 +3,15 @@
 
 typedef enum
 {
-	Read = 0,
+	Success = 0,
+	Error = -1
+} ResultCode;
+
+typedef enum
+{
+	Open,
+	Close,
+	Read,
 	Write,
 	SetChannel,
 	GetChannel,
@@ -16,7 +24,7 @@ typedef enum
 	GetMonitor,
 	SetMtu,
 	GetMtu
-} MessageID;
+} MethodID;
 
 typedef struct
 {
@@ -29,6 +37,9 @@ typedef struct
 
 	// Payload length
 	unsigned short payloadLength;
+
+	// Message payload
+	unsigned char payload[];
 
 } __attribute__((packed)) Message;
 
