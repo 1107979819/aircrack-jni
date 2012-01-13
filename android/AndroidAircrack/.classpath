@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="gen"/>
+	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/aircrack-jni"/>
+	<classpathentry kind="lib" path="lib/preon-el-1.1-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="lib/preon-emitter-1.1-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="lib/preon-io-1.1-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="lib/preon-simple-archetype-1.1-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="lib/commons-io-1.3.1.jar"/>
+	<classpathentry kind="lib" path="lib/antlr-runtime-3.4.jar"/>
+	<classpathentry kind="lib" path="lib/cglib-2.2.2.jar"/>
+	<classpathentry kind="lib" path="lib/jsr305-1.3.9.jar"/>
+	<classpathentry kind="lib" path="lib/preon-binding-1.1-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="lib/pecia-1.1-SNAPSHOT.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
