@@ -55,9 +55,10 @@ JNIEXPORT jint JNICALL Java_org_tudelft_aircrack_Interface__1read(JNIEnv * env, 
 
 	// Receive a WiFi packet
 	bytesRead = wi_read(wi, buffer, bufferSize, &rxi);
-
-	// Copy the received data to the java byte array
-	(*env)->SetByteArrayRegion(env, bufferArray, 0, bufferSize, buffer);
+	
+	if (bytesRead>0)
+		// Copy the received data to the java byte array
+		(*env)->SetByteArrayRegion(env, bufferArray, 0, bufferSize, buffer);
 
 	// Free buffer
 	free(buffer);
