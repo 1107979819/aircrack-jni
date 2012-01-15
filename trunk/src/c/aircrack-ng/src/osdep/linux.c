@@ -1373,7 +1373,7 @@ static int do_linux_open(struct wif *wi, char *iface)
     char r_file[128], buf[128];
     struct ifreq ifr;
     char * unused_str;
-
+    
     dev->inject_wlanng = 1;
     dev->rate = 2; /* default to 1Mbps if nothing is set */
 
@@ -1767,6 +1767,9 @@ static int do_linux_open(struct wif *wi, char *iface)
     }
 
     dev->arptype_in = dev->arptype_out;
+    
+    // NB: set non-blocking IO on input file descriptor
+    fcntl(dev->fd_in, F_SETFL, O_NONBLOCK);
 
     return 0;
 close_out:
