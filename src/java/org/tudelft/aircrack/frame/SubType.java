@@ -68,6 +68,11 @@ public enum SubType
 		return Reserved;
 	}
 	
+	public FrameType getType()
+	{
+		return type;
+	}
+	
 	public int getSubType()
 	{
 		return subType;

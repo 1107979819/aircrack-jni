@@ -2,12 +2,14 @@ package org.tudelft.aircrack.sample;
 
 import java.io.IOException;
 
+import org.codehaus.preon.Codec;
 import org.codehaus.preon.Codecs;
 import org.codehaus.preon.DecodingException;
 import org.tudelft.aircrack.JniInterface;
 import org.tudelft.aircrack.frame.Address;
 import org.tudelft.aircrack.frame.Frame;
 import org.tudelft.aircrack.frame.control.CtsFrame;
+import org.tudelft.aircrack.frame.control.RaTaFrame;
 import org.tudelft.aircrack.frame.control.RtsFrame;
 
 public class StationDetect
@@ -19,59 +21,56 @@ public class StationDetect
 		final JniInterface iface = new JniInterface("mon0");
 		iface.open();
 		
+		iface.setChannel(6);
+		
 		// 00:26:37:3b:1e:e6
-		final Address phoneAddress = new Address(
-				new byte[] {
-						(byte)0x00, (byte)0x26, (byte)0x37,
-						(byte)0x3b, (byte)0x1e, (byte)0xe6
-						});
-
-//		final Address phoneAddress = new Address(
-//				new byte[] {
-//						(byte)0xec, (byte)0x55, (byte)0xf9,
-//						(byte)0x23, (byte)0x72, (byte)0x87
-//						});
+		final Address deviceAddress = new Address("00:a1:b0:00:bf:62");
 		
 		// Transmit rate in ms
 		final long txRate = 1000;
+		
+		iface.setChannel(6);
+		
 
 		new Thread(new Runnable() {
 			@Override
 			public void run()
 			{
+				int channel = 1;
 				while (true)
 				{
-//					System.out.println("RTS");
+					
+//					iface.setChannel(channel++);
+//					
+//					if (channel>13)
+//						channel = 1;
 					
 					// Send RTS
 					RtsFrame rts = new RtsFrame();
-					rts.setRA(phoneAddress);
+					rts.setRA(deviceAddress);
 					rts.setTA(iface.getMac());
-					rts.setDuration(10);
+					rts.setDuration(10*1000);
 					
 					// Encode
 					byte[] raw;
 					try
 					{
+						
+						Codec<RaTaFrame> codec = Codecs.create(RaTaFrame.class);
+						Codecs.encode(rts, codec);
 
-						raw = Codecs.encode(rts, Codecs.create(RtsFrame.class));
-						iface.write(raw);
+						//raw = Frame.encode(rts);
+						
+						raw = Codecs.encode(rts, codec);
 						
 //						Util.printByteBuffer(raw);
-					
-//						Frame test = Frame.decode(null, raw);
-//						System.out.println(test);
 						
+						iface.write(raw);
 						
 					} catch (IOException e)
 					{
 						e.printStackTrace();
 					}
-//					catch (DecodingException e)
-//					{
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
-//					}
 					
 					try
 					{
@@ -84,7 +83,8 @@ public class StationDetect
 			}
 		}).start();
 
-		while (true)
+		long startTime = System.currentTimeMillis();
+		while (System.currentTimeMillis()-startTime < 60*1000)
 		{
 			
 			// Collect CTS frames
@@ -92,17 +92,28 @@ public class StationDetect
 			if (frame==null)
 				continue;
 			
+//			if (frame instanceof ProbeRequest)
+//			{
+//				ProbeRequest request = (ProbeRequest)frame;
+//				if (!request.getSsid().startsWith("HHID"))
+//					System.out.println(request);
+//			}
+			
 			if (frame instanceof CtsFrame)
 			{
-//				System.out.println(((CtsFrame) frame).getRA());
-					
 				if (((CtsFrame) frame).getRA().compareTo(iface.getMac())==0)
+				{
 					System.out.println(frame);
+					System.out.println("\t" + frame.getReceiveInfo());
+					System.out.flush();
+				}
 			}
+
+			Thread.yield();
 			
 		}		
 		
-		// iface.close();
+		iface.close();
 		
 	}
 

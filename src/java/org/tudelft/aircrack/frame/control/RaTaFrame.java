@@ -1,14 +1,15 @@
 package org.tudelft.aircrack.frame.control;
 
 import org.codehaus.preon.annotation.Bound;
+import org.codehaus.preon.annotation.Order;
 import org.tudelft.aircrack.frame.Address;
 
 public class RaTaFrame extends RaFrame
 {
 
 	@Bound
-	public Address TA;
-
+	@Order(2) public Address TA;
+	
 	public Address getTA()
 	{
 		return TA;

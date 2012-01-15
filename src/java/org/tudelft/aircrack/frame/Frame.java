@@ -1,5 +1,6 @@
 package org.tudelft.aircrack.frame;
 
+import java.io.IOException;
 import java.util.HashMap;
 
 import org.codehaus.preon.Codec;
@@ -32,11 +33,32 @@ public class Frame
 	
 	private final static HashMap<Class<?>, Codec<?>> codecCache = new HashMap<Class<?>, Codec<?>>(); 
 	
-	protected final static Codec<Frame> frameCodec = getCodec(Frame.class);
-	protected final static Codec<FrameControl> frameControlCodec = getCodec(FrameControl.class);
+	protected final static Codec<Frame> frameCodec = Codecs.create(Frame.class);
+	protected final static Codec<FrameControl> frameControlCodec = Codecs.create(FrameControl.class);
 
 	@Bound
 	@Order(1) public FrameControl frameControl;
+	
+	// This is where the magic happens
+	@SuppressWarnings("serial")
+	private final static HashMap<SubType, Class<?>> frameTypeMap = new HashMap<SubType, Class<?>>() {{
+	
+		// Management frames
+		put(SubType.Beacon, Beacon.class);
+		put(SubType.ProbeRequest, ProbeRequest.class);
+		put(SubType.ProbeResponse, ProbeResponse.class);
+		
+		// Control frames
+		put(SubType.BlockAckRequest, BlockAckRequestFrame.class);
+		put(SubType.BlockAck, BlockAckFrame.class);
+		put(SubType.PsPoll, PsPollFrame.class);
+		put(SubType.RTS, RtsFrame.class);
+		put(SubType.CTS, CtsFrame.class);
+		put(SubType.ACK, AckFrame.class);
+		put(SubType.CfEnd, CfEndFrame.class);
+		put(SubType.CfEnd_CfAck, CfEndCfAckFrame.class);
+		
+	}}; 
 	
 	public Frame()
 	{
@@ -44,11 +66,26 @@ public class Frame
 	}
 	
 	@SuppressWarnings("unchecked")
-	private final static <T> Codec<T> getCodec(Class<T> cls)
+	private final static <T> Codec<T> getCodec(SubType type)
 	{
+		// Determine the class to decode the frame subtype into
+		Class<?> cls = frameTypeMap.get(type);
+		
+		// If the given subtype does not appear in the frameTypeMap, there is no specific Java 
+		// class to represent that frame type (yet). Instead, just decode it into a generic management/frame/data
+		// frame.
+		if (cls==null)
+		{
+			if (type.getType()==FrameType.Management) cls = ManagementFrame.class;
+			if (type.getType()==FrameType.Control) cls = ControlFrame.class;
+			if (type.getType()==FrameType.Data) cls = DataFrame.class;
+		}
+
+		// Instantiate the appropriate codec lazily
 		if (!codecCache.containsKey(cls))
 			codecCache.put(cls, Codecs.create(cls, new FrameBodyCodecFactory(), new InformationElementListCodecFactory()));
 		
+		// Return the codec
 		return (Codec<T>)codecCache.get(cls);
 	}
 	
@@ -57,98 +94,26 @@ public class Frame
 		// Decode packet header
 		Frame frame = null;
 		FrameControl frameControl = Codecs.decode(frameControlCodec, buffer);
-
-		switch (frameControl.getType())
-		{
-			case Management:
-				frame = decodeManagementFrame(frameControl, buffer);
-				break;
-
-			case Control:
-				frame = decodeControlFrame(frameControl, buffer);
-				break;
-
-			case Data:
-				frame = decodeDataFrame(frameControl, buffer);
-				break;
-
-		}
-
-		if (frame==null)
-			frame = Codecs.decode(frameCodec, buffer);
+		
+		// Get the appropriate codec for this frame type
+		Codec<Frame> codec = getCodec(frameControl.getSubType());
+		
+		// Decode and return
+		frame = Codecs.decode(codec, buffer);
 
 		frame.receiveInfo = receiveInfo;
 		
 		return frame;
 	}
-
-	private static Frame decodeManagementFrame(FrameControl frameControl, byte[] buffer) throws DecodingException
+	
+	public static byte[] encode(Frame frame) throws IOException
 	{
 		
-		switch (frameControl.getSubType())
-		{
-			case Beacon:
-				return Codecs.decode(getCodec(Beacon.class), buffer);						
-			case ProbeResponse:
-				return Codecs.decode(getCodec(ProbeResponse.class), buffer);						
-			case ProbeRequest:
-				return Codecs.decode(getCodec(ProbeRequest.class), buffer);						
-		}
+		Codec<Frame> codec = getCodec(frame.getFrameControl().getSubType());
 		
-		// The subtype hasn't been implemented yet, decode the part common to all management frames.
-		Codec<ManagementFrame> managementFrameCodec = getCodec(ManagementFrame.class);
-		return Codecs.decode(managementFrameCodec, buffer);						
+		return Codecs.encode(frame, codec);		
 	}
 	
-	private static Frame decodeControlFrame(FrameControl frameControl, byte[] buffer) throws DecodingException
-	{
-		switch (frameControl.getSubType())
-		{
-			case BlockAckRequest:
-				Codec<BlockAckRequestFrame> blockAckRequestCodec = getCodec(BlockAckRequestFrame.class);
-				return Codecs.decode(blockAckRequestCodec, buffer);
-			case BlockAck:
-				Codec<BlockAckFrame> blockAckCodec = getCodec(BlockAckFrame.class);
-				return Codecs.decode(blockAckCodec, buffer);
-			case PsPoll:
-				Codec<PsPollFrame> psPollCodec = getCodec(PsPollFrame.class);
-				return Codecs.decode(psPollCodec, buffer);
-			case RTS:
-				Codec<RtsFrame> rtsCodec = getCodec(RtsFrame.class);
-				return Codecs.decode(rtsCodec, buffer);
-			case CTS:
-				Codec<CtsFrame> ctsCodec = getCodec(CtsFrame.class);
-				return Codecs.decode(ctsCodec, buffer);
-			case ACK:
-				Codec<AckFrame> ackCodec = getCodec(AckFrame.class);
-				return Codecs.decode(ackCodec, buffer);
-			case CfEnd:
-				Codec<CfEndFrame> cfEndCodec = getCodec(CfEndFrame.class);
-				return Codecs.decode(cfEndCodec, buffer);
-			case CfEnd_CfAck:
-				Codec<CfEndCfAckFrame> cfEndAckCodec = getCodec(CfEndCfAckFrame.class);
-				return Codecs.decode(cfEndAckCodec, buffer);
-		}
-		
-		// The subtype hasn't been implemented yet, decode the part common to all management frames.
-		Codec<ControlFrame> controlFrameCodec = getCodec(ControlFrame.class);
-		return Codecs.decode(controlFrameCodec, buffer);						
-	}
-	
-	private static Frame decodeDataFrame(FrameControl frameControl, byte[] buffer) throws DecodingException
-	{
-		// TODO all data frames are decoded into a single DataFrame class
-		try {
-			return Codecs.decode(getCodec(DataFrame.class), buffer);
-		} catch (Throwable t)
-		{
-			System.out.println(frameControl);
-			t.printStackTrace();
-			System.exit(-1);
-			return null;
-		}
-	}
-
 	
 	public FrameControl getFrameControl()
 	{
