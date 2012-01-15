@@ -1,16 +1,16 @@
 #include <stdlib.h>
 #include <jni.h>
 
-#include "org_tudelft_aircrack_Interface.h"
+#include "org_tudelft_aircrack_JniInterface.h"
 #include "osdep.h"
 
-JNIEXPORT jlong JNICALL Java_org_tudelft_aircrack_Interface__1open(JNIEnv * env, jclass class, jstring interfaceName)
+JNIEXPORT jlong JNICALL Java_org_tudelft_aircrack_JniInterface__1open(JNIEnv * env, jclass class, jstring JniInterfaceName)
 {
-	// Interface pointer
+	// JniInterface pointer
 	struct wif * wi;
 
-	// Interface to open
-	const char * iface = (*env)->GetStringUTFChars(env, interfaceName, 0);
+	// JniInterface to open
+	const char * iface = (*env)->GetStringUTFChars(env, JniInterfaceName, 0);
 
 	wi = wi_open((char*)iface);
 
@@ -18,7 +18,7 @@ JNIEXPORT jlong JNICALL Java_org_tudelft_aircrack_Interface__1open(JNIEnv * env,
 	return (jlong)(void*)wi;
 }
 
-JNIEXPORT void JNICALL Java_org_tudelft_aircrack_Interface__1close(JNIEnv * env, jclass class, jlong wifPointer)
+JNIEXPORT void JNICALL Java_org_tudelft_aircrack_JniInterface__1close(JNIEnv * env, jclass class, jlong wifPointer)
 {
 	struct wif * wi = (struct wif*)wifPointer;
 
@@ -41,7 +41,7 @@ void setLongField(JNIEnv * env, jobject object, const char * fieldName, jlong va
 	(*env)->SetLongField(env, object, fid, value);
 }
 
-JNIEXPORT jint JNICALL Java_org_tudelft_aircrack_Interface__1read(JNIEnv * env, jclass class, jlong wifPointer, jbyteArray bufferArray, jobject receiveInfo)
+JNIEXPORT jint JNICALL Java_org_tudelft_aircrack_JniInterface__1read(JNIEnv * env, jclass class, jlong wifPointer, jbyteArray bufferArray, jobject receiveInfo)
 {
 
 	int bytesRead;
@@ -75,7 +75,7 @@ JNIEXPORT jint JNICALL Java_org_tudelft_aircrack_Interface__1read(JNIEnv * env, 
 	return bytesRead;
 }
 
-JNIEXPORT jint JNICALL Java_org_tudelft_aircrack_Interface__1write(JNIEnv * env, jclass class, jlong wifPointer, jbyteArray bufferArray, jobject object)
+JNIEXPORT jint JNICALL Java_org_tudelft_aircrack_JniInterface__1write(JNIEnv * env, jclass class, jlong wifPointer, jbyteArray bufferArray, jobject object)
 {
 	struct wif * wi = (struct wif*)wifPointer;
 	struct tx_info txi;
@@ -96,31 +96,31 @@ JNIEXPORT jint JNICALL Java_org_tudelft_aircrack_Interface__1write(JNIEnv * env,
 }
 
 
-JNIEXPORT jint JNICALL Java_org_tudelft_aircrack_Interface__1setChannel(JNIEnv * env, jclass class, jlong wifPointer, jint channel)
+JNIEXPORT jint JNICALL Java_org_tudelft_aircrack_JniInterface__1setChannel(JNIEnv * env, jclass class, jlong wifPointer, jint channel)
 {
 	struct wif * wi = (struct wif*) wifPointer;
 	return wi_set_channel(wi, channel);
 }
 
-JNIEXPORT jint JNICALL Java_org_tudelft_aircrack_Interface__1getChannel(JNIEnv * env, jclass class, jlong wifPointer)
+JNIEXPORT jint JNICALL Java_org_tudelft_aircrack_JniInterface__1getChannel(JNIEnv * env, jclass class, jlong wifPointer)
 {
 	struct wif * wi = (struct wif*) wifPointer;
 	return wi_get_channel(wi);
 }
 
-JNIEXPORT jint JNICALL Java_org_tudelft_aircrack_Interface__1setFrequency(JNIEnv * env, jclass class, jlong wifPointer, jint frequency)
+JNIEXPORT jint JNICALL Java_org_tudelft_aircrack_JniInterface__1setFrequency(JNIEnv * env, jclass class, jlong wifPointer, jint frequency)
 {
 	struct wif * wi = (struct wif*) wifPointer;
 	return wi_set_freq(wi, frequency);
 }
 
-JNIEXPORT jint JNICALL Java_org_tudelft_aircrack_Interface__1getFrequency(JNIEnv * env, jclass class, jlong wifPointer)
+JNIEXPORT jint JNICALL Java_org_tudelft_aircrack_JniInterface__1getFrequency(JNIEnv * env, jclass class, jlong wifPointer)
 {
 	struct wif * wi = (struct wif*) wifPointer;
 	return wi_get_freq(wi);
 }
 
-JNIEXPORT jint JNICALL Java_org_tudelft_aircrack_Interface__1setMac(JNIEnv * env, jclass class, jlong wifPointer, jbyteArray macArray)
+JNIEXPORT jint JNICALL Java_org_tudelft_aircrack_JniInterface__1setMac(JNIEnv * env, jclass class, jlong wifPointer, jbyteArray macArray)
 {
 	struct wif * wi = (struct wif*) wifPointer;
 	char mac[6];
@@ -131,7 +131,7 @@ JNIEXPORT jint JNICALL Java_org_tudelft_aircrack_Interface__1setMac(JNIEnv * env
 	return wi_set_mac(wi, mac);
 }
 
-JNIEXPORT jint JNICALL Java_org_tudelft_aircrack_Interface__1getMac(JNIEnv * env, jclass class, jlong wifPointer, jbyteArray macArray)
+JNIEXPORT jint JNICALL Java_org_tudelft_aircrack_JniInterface__1getMac(JNIEnv * env, jclass class, jlong wifPointer, jbyteArray macArray)
 {
 	struct wif * wi = (struct wif*) wifPointer;
 	char mac[6];
@@ -145,31 +145,31 @@ JNIEXPORT jint JNICALL Java_org_tudelft_aircrack_Interface__1getMac(JNIEnv * env
 	return ret;
 }
 
-JNIEXPORT jint JNICALL Java_org_tudelft_aircrack_Interface__1setRate(JNIEnv * env, jclass class, jlong wifPointer, jint rate)
+JNIEXPORT jint JNICALL Java_org_tudelft_aircrack_JniInterface__1setRate(JNIEnv * env, jclass class, jlong wifPointer, jint rate)
 {
 	struct wif * wi = (struct wif*) wifPointer;
 	return wi_set_rate(wi, rate);
 }
 
-JNIEXPORT jint JNICALL Java_org_tudelft_aircrack_Interface__1getRate(JNIEnv * env, jclass class, jlong wifPointer)
+JNIEXPORT jint JNICALL Java_org_tudelft_aircrack_JniInterface__1getRate(JNIEnv * env, jclass class, jlong wifPointer)
 {
 	struct wif * wi = (struct wif*) wifPointer;
 	return wi_get_rate(wi);
 }
 
-JNIEXPORT jint JNICALL Java_org_tudelft_aircrack_Interface__1getMonitor(JNIEnv * env, jclass class, jlong wifPointer)
+JNIEXPORT jint JNICALL Java_org_tudelft_aircrack_JniInterface__1getMonitor(JNIEnv * env, jclass class, jlong wifPointer)
 {
 	struct wif * wi = (struct wif*) wifPointer;
 	return wi_get_monitor(wi);
 }
 
-JNIEXPORT jint JNICALL Java_org_tudelft_aircrack_Interface__1setMtu(JNIEnv * env, jclass class, jlong wifPointer, jint mtu)
+JNIEXPORT jint JNICALL Java_org_tudelft_aircrack_JniInterface__1setMtu(JNIEnv * env, jclass class, jlong wifPointer, jint mtu)
 {
 	struct wif * wi = (struct wif*) wifPointer;
 	return wi_set_mtu(wi, mtu);
 }
 
-JNIEXPORT jint JNICALL Java_org_tudelft_aircrack_Interface__1getMtu(JNIEnv * env, jclass class, jlong wifPointer)
+JNIEXPORT jint JNICALL Java_org_tudelft_aircrack_JniInterface__1getMtu(JNIEnv * env, jclass class, jlong wifPointer)
 {
 	struct wif * wi = (struct wif*) wifPointer;
 	return wi_get_mtu(wi);
