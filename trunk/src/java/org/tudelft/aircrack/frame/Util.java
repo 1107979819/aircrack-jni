@@ -3,44 +3,49 @@ package org.tudelft.aircrack.frame;
 public class Util
 {
 	
-	public static void printByteBuffer(byte[] buf)
+	private final static int printWidth = 16;
+	
+	public static void printLine(byte[] buf, int start)
 	{
-		int i, mode = 0;
-		for (i=0; i<buf.length; i++)
+		
+		// Print hex 
+		for (int i=0; i<printWidth; i++)
 		{
-			int b = buf[i] & 0xff;
 			
-			if (mode==0)
-			{
-
-				System.out.printf("%02x ", b);
-
-				if ((i&15)==15)
-				{
-					// dargons
-					i-=16;
-					mode = 1;
-					System.out.print(" | ");
-				}
-				
-			} else
-			{
-				char c = (b > 32 && b < 127) ? (char)b : ' ';
-				
-				System.out.printf("%c", c);
-				
-				if ((i&15)==15)
-				{
-					System.out.println();
-					mode = 0;
-				}
-				
-			}
+			// Avoid out-of-bounds exceptions
+			if (i>=buf.length) break;
+			
+			// Print hex byte
+			System.out.printf("%02x ", buf[i] & 0xff);
 			
 		}
-
-		if ((i&15)!=15)
+		
+		// Print divider
+		System.out.print(" | ");
+		
+		// Print chars
+		for (int i=0; i<printWidth; i++)
+		{
+			
+			// Avoid out-of-bounds exceptions
+			if (i>=buf.length) break;
+			
+			// Print char
+			char c = (buf[i] > 32 && buf[i] < 255) ? (char)buf[i] : ' ';
+			
+			System.out.printf("%c", c);			
+		}
+		
+	}
+	
+	public static void printByteBuffer(byte[] buf)
+	{
+		
+		for (int i=0; i<buf.length; i+=16)
+		{
+			printLine(buf, i);
 			System.out.println();
+		}
 
 	}
 

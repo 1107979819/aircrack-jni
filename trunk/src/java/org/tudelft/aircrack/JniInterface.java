@@ -1,8 +1,6 @@
 package org.tudelft.aircrack;
 
-import org.codehaus.preon.DecodingException;
 import org.tudelft.aircrack.frame.Address;
-import org.tudelft.aircrack.frame.Frame;
 
 public class JniInterface extends Interface
 {
@@ -10,6 +8,7 @@ public class JniInterface extends Interface
 	static
 	{
 		System.loadLibrary("aircrack-ng-jni");
+		System.out.println("JNI library loaded");
 	}
 	
 	// Interface name, i.e. 'mon0'.
