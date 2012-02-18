@@ -4,6 +4,7 @@ import org.codehaus.preon.annotation.Bound;
 import org.codehaus.preon.annotation.Order;
 import org.tudelft.aircrack.frame.control.field.BlockAckControl;
 import org.tudelft.aircrack.frame.control.field.BlockAckStartingSequence;
+import org.tudelft.aircrack.frame.visitor.FrameVisitor;
 
 public class BlockAckOrRequestFrame extends RaTaFrame
 {
@@ -33,6 +34,12 @@ public class BlockAckOrRequestFrame extends RaTaFrame
 			BlockAckStartingSequence blockAckStartingSequence)
 	{
 		this.blockAckStartingSequence = blockAckStartingSequence;
+	}
+
+	@Override
+	public void accept(FrameVisitor visitor)
+	{
+		visitor.visit(this);
 	}
 
 }

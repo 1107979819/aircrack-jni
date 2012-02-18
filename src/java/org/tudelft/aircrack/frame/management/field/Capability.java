@@ -16,51 +16,76 @@ public class Capability
 {
 	
 	@Bound
-	@Order(1) boolean ess;
+	@Order(1) public boolean ess;
 	
 	@Bound
-	@Order(2) boolean ibss;
+	@Order(2) public boolean ibss;
 	
 	@Bound
-	@Order(3) boolean cfPollable;
+	@Order(3) public boolean cfPollable;
 	
 	@Bound
-	@Order(4) boolean cfPollRequest;
+	@Order(4) public boolean cfPollRequest;
 	
 	@Bound
-	@Order(5) boolean privacy;
+	@Order(5) public boolean privacy;
 	
 	@Bound
-	@Order(6) boolean shortPreamble;
+	@Order(6) public boolean shortPreamble;
 	
 	@Bound
-	@Order(7) boolean pbcc;
+	@Order(7) public boolean pbcc;
 	
 	@Bound
-	@Order(8) boolean channelAgility;
+	@Order(8) public boolean channelAgility;
 	
 	@Bound
-	@Order(9) boolean spectrumManagement;
+	@Order(9) public boolean spectrumManagement;
 	
 	@Bound
-	@Order(10) boolean qos;
+	@Order(10) public boolean qos;
 	
 	@Bound
-	@Order(11) boolean shortSlotTime;
+	@Order(11) public boolean shortSlotTime;
 	
 	@Bound
-	@Order(12) boolean apsd;
+	@Order(12) public boolean apsd;
 	
 	@Bound
-	@Order(13) boolean reserved1;
+	@Order(13) public boolean reserved1;
 	
 	@Bound
-	@Order(14) boolean dsssOfdm;
+	@Order(14) public boolean dsssOfdm;
 	
 	@Bound
-	@Order(15) boolean delayedBlockAck;
+	@Order(15) public boolean delayedBlockAck;
 	
 	@Bound
-	@Order(16) boolean immediateBlockAck;
+	@Order(16) public boolean immediateBlockAck;
+	
+	@Override
+	public String toString()
+	{
+		String ret = "";
+		
+		if (ess) ret += "ess ";
+		if (ibss) ret += "ibss ";
+		if (cfPollable) ret += "cfPollable ";
+		if (cfPollRequest) ret += "cfPollRequest ";
+		if (privacy) ret += "privacy ";
+		if (shortPreamble) ret += "shortPreamble ";
+		if (pbcc) ret += "pbcc ";
+		if (channelAgility) ret += "channelAgility ";
+		if (spectrumManagement) ret += "spectrumManagement ";
+		if (qos) ret += "qos ";
+		if (shortSlotTime) ret += "shortSlotTime ";
+		if (apsd) ret += "apsd ";
+		if (reserved1) ret += "reserved1 ";
+		if (dsssOfdm) ret += "dsssOfdm ";
+		if (delayedBlockAck) ret += "delayedBlockAck ";
+		if (immediateBlockAck) ret += "immediateBlockAck ";
+		
+		return ret.trim();
+	}
 	
 }

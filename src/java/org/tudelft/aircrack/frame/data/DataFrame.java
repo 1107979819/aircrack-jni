@@ -11,6 +11,7 @@ import org.tudelft.aircrack.frame.SequenceControl;
 import org.tudelft.aircrack.frame.SubType;
 import org.tudelft.aircrack.frame.data.field.FrameBody;
 import org.tudelft.aircrack.frame.data.field.QualityOfServiceControl;
+import org.tudelft.aircrack.frame.visitor.FrameVisitor;
 
 @ImportStatic(SubType.class)
 public class DataFrame extends Frame
@@ -174,4 +175,10 @@ public class DataFrame extends Frame
 		}
 	}
 	
+	@Override
+	public void accept(FrameVisitor visitor)
+	{
+		visitor.visit(this);
+	}
+
 }

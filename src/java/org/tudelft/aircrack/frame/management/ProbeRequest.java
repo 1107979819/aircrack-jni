@@ -5,6 +5,7 @@ import org.tudelft.aircrack.frame.SubType;
 import org.tudelft.aircrack.frame.management.field.ElementId;
 import org.tudelft.aircrack.frame.management.field.InformationElement;
 import org.tudelft.aircrack.frame.management.field.InformationElements;
+import org.tudelft.aircrack.frame.visitor.FrameVisitor;
 
 public class ProbeRequest extends ManagementFrame
 {
@@ -48,4 +49,11 @@ public class ProbeRequest extends ManagementFrame
 		
 		return ret;
 	}
+	
+	@Override
+	public void accept(FrameVisitor visitor)
+	{
+		visitor.visit(this);
+	}
+	
 }

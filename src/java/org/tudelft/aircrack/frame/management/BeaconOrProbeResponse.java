@@ -8,6 +8,7 @@ import org.tudelft.aircrack.frame.management.field.Capability;
 import org.tudelft.aircrack.frame.management.field.ElementId;
 import org.tudelft.aircrack.frame.management.field.InformationElement;
 import org.tudelft.aircrack.frame.management.field.InformationElements;
+import org.tudelft.aircrack.frame.visitor.FrameVisitor;
 
 /**
  * 
@@ -19,16 +20,16 @@ public class BeaconOrProbeResponse extends ManagementFrame
 {
 
 	@Bound
-	@Order(1) private Timestamp timestamp;
+	@Order(1) public Timestamp timestamp = new Timestamp();
 	
 	@BoundNumber(size="16")
-	@Order(2) private int beaconInterval;
+	@Order(2) public int beaconInterval;
 
 	@Bound
-	@Order(3) private Capability capability;
+	@Order(3) public Capability capability = new Capability();
 	
 	@Bound
-	@Order(4) private InformationElements elements;
+	@Order(4) public InformationElements elements = new InformationElements();
 	
 	public Capability getCapability()
 	{
@@ -90,12 +91,22 @@ public class BeaconOrProbeResponse extends ManagementFrame
 	@Override
 	public String toString()
 	{
-		String ret = super.toString() + " SSID: [" + getSsid() + "]\n";
+		String ret = super.toString() +
+				" Capabilities: [" + capability.toString() + "] " +
+				" SSID: [" + getSsid() + "]" + 
+				" beacon interval: " + beaconInterval +
+				"\n";
 		
 		for (InformationElement element : elements.getElements())
 			ret += "\t" + element.toString() + "\n";
 		
 		return ret;
+	}
+	
+	@Override
+	public void accept(FrameVisitor visitor)
+	{
+		visitor.visit(this);
 	}
 
 }

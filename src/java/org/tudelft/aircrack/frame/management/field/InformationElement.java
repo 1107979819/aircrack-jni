@@ -32,7 +32,6 @@ public class InformationElement
 	
 	public InformationElement()
 	{
-		// empty constructor for Preon
 	}
 	
 	public InformationElement(ElementId elementId, byte[] data)
