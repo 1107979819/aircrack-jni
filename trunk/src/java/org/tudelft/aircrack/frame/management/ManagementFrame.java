@@ -22,7 +22,7 @@ public class ManagementFrame extends Frame
 	@Order(3) public Address SA = Address.Zero;
 	
 	@Bound
-	@Order(4) public Address BSSID = Address.Broadcast;
+	@Order(4) public Address bssid = Address.Broadcast;
 	
 	@Bound
 	@Order(5) public SequenceControl sequenceControl = new SequenceControl();
@@ -53,9 +53,9 @@ public class ManagementFrame extends Frame
 		return SA;
 	}
 	
-	public Address getBSSID()
+	public Address getBssid()
 	{
-		return BSSID;
+		return bssid;
 	}
 	
 	public void setDuration(int duration)
@@ -75,13 +75,13 @@ public class ManagementFrame extends Frame
 	
 	public void setBSSID(Address bSSID)
 	{
-		BSSID = bSSID;
+		bssid = bSSID;
 	}
 	
 	@Override
 	public String toString()
 	{
-		return super.toString() + " duration: " + duration + " adr1:" + address1 + " SA:" + SA + " BSSID:" + BSSID;
+		return super.toString() + " duration: " + duration + " adr1:" + address1 + " SA:" + SA + " BSSID:" + bssid;
 	}
 
 	@Override

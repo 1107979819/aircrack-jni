@@ -86,7 +86,7 @@ public class TraceLoader
 		{
 			if (frame instanceof BeaconOrProbeResponse)
 			{
-				Address bssid = ((BeaconOrProbeResponse)frame).getBSSID();
+				Address bssid = ((BeaconOrProbeResponse)frame).getBssid();
 				
 				if (!power.containsKey(bssid))
 					power.put(bssid, new ArrayList<Integer>());

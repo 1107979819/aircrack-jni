@@ -28,11 +28,11 @@ public class FakeStation
 			
 			// Parse incoming
 			Frame frame;
-			while ((frame=iface.receive())!=null)
-			{
-				if (frame instanceof Beacon)
-					System.out.println(frame);
-			}
+//			while ((frame=iface.receive())!=null)
+//			{
+//				if (frame instanceof Beacon)
+//					System.out.println(frame);
+//			}
 			
 			// Send a beacon message
 			Beacon beacon = new Beacon();
