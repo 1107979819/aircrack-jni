@@ -55,7 +55,7 @@ public class Probe
 			{
 				ProbeResponse response = (ProbeResponse)frame;
 				System.out.printf("\t%s %d %d %d %s\n",
-						response.getBSSID().toString(),
+						response.getBssid().toString(),
 						(response.getReceiveInfo().getChannel() - 103) / 5,
 						response.getReceiveInfo().getNoise() + 1,
 						response.getReceiveInfo().getPower(),
