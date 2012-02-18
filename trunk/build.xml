@@ -45,9 +45,13 @@
 		<javadoc
 			sourcepath="${src}"
 			destdir="${doc}"
-			classpath="${bcelpath}"
 		>
-		</javadoc>
+			<classpath>
+				<fileset dir="${lib}">
+					<include name="**/*.jar"/>
+				</fileset>
+			</classpath>
+    		</javadoc>
 	</target>
 
 	<!-- clean -->

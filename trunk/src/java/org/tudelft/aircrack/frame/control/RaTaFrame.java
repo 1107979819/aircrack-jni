@@ -3,6 +3,7 @@ package org.tudelft.aircrack.frame.control;
 import org.codehaus.preon.annotation.Bound;
 import org.codehaus.preon.annotation.Order;
 import org.tudelft.aircrack.frame.Address;
+import org.tudelft.aircrack.frame.visitor.FrameVisitor;
 
 public class RaTaFrame extends RaFrame
 {
@@ -26,4 +27,9 @@ public class RaTaFrame extends RaFrame
 		return super.toString() + " RA: " + RA + " TA:" + TA;
 	}
 	
+	@Override
+	public void accept(FrameVisitor visitor)
+	{
+		visitor.visit(this);
+	}
 }

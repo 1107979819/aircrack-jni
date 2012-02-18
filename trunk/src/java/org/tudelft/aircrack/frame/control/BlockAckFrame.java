@@ -1,6 +1,7 @@
 package org.tudelft.aircrack.frame.control;
 
 import org.codehaus.preon.annotation.BoundList;
+import org.tudelft.aircrack.frame.visitor.FrameVisitor;
 
 public class BlockAckFrame extends BlockAckOrRequestFrame 
 {
@@ -9,4 +10,10 @@ public class BlockAckFrame extends BlockAckOrRequestFrame
 	@BoundList(size="8")
 	private byte[] bitmap;
 	
+	@Override
+	public void accept(FrameVisitor visitor)
+	{
+		visitor.visit(this);
+	}
+
 }

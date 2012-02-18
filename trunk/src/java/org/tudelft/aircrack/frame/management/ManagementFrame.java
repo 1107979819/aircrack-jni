@@ -7,6 +7,7 @@ import org.tudelft.aircrack.frame.Address;
 import org.tudelft.aircrack.frame.Frame;
 import org.tudelft.aircrack.frame.FrameType;
 import org.tudelft.aircrack.frame.SequenceControl;
+import org.tudelft.aircrack.frame.visitor.FrameVisitor;
 
 public class ManagementFrame extends Frame
 {
@@ -81,6 +82,12 @@ public class ManagementFrame extends Frame
 	public String toString()
 	{
 		return super.toString() + " duration: " + duration + " adr1:" + address1 + " SA:" + SA + " BSSID:" + BSSID;
+	}
+
+	@Override
+	public void accept(FrameVisitor visitor)
+	{
+		visitor.visit(this);
 	}
 
 }

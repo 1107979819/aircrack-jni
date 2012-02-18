@@ -3,6 +3,7 @@ package org.tudelft.aircrack.frame.control;
 import org.codehaus.preon.annotation.BoundNumber;
 import org.tudelft.aircrack.frame.Frame;
 import org.tudelft.aircrack.frame.FrameType;
+import org.tudelft.aircrack.frame.visitor.FrameVisitor;
 
 public class ControlFrame extends Frame
 {
@@ -39,6 +40,12 @@ public class ControlFrame extends Frame
 	public String toString()
 	{
 		return super.toString();
+	}
+
+	@Override
+	public void accept(FrameVisitor visitor)
+	{
+		visitor.visit(this);
 	}
 
 }

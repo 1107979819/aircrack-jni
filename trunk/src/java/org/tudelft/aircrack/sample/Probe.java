@@ -54,9 +54,10 @@ public class Probe
 			if (frame instanceof ProbeResponse)
 			{
 				ProbeResponse response = (ProbeResponse)frame;
-				System.out.printf("\t%s %d %d %s\n",
+				System.out.printf("\t%s %d %d %d %s\n",
 						response.getBSSID().toString(),
 						(response.getReceiveInfo().getChannel() - 103) / 5,
+						response.getReceiveInfo().getNoise() + 1,
 						response.getReceiveInfo().getPower(),
 						response.getSsid()
 						);
@@ -74,8 +75,12 @@ public class Probe
 
 		long startTime = System.currentTimeMillis();
 		
-		for (int i=1; i<=13; i++)
-			probeChannel(iface, i);
+//		for (int i=1; i<=13; i++)
+//			probeChannel(iface, i);
+		
+		probeChannel(iface, 6);
+		probeChannel(iface, 9);
+		probeChannel(iface, 11);
 
 		System.out.println("Total scan time: " + (System.currentTimeMillis() - startTime));
 		

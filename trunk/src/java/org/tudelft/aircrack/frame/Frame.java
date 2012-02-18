@@ -25,8 +25,10 @@ import org.tudelft.aircrack.frame.management.ManagementFrame;
 import org.tudelft.aircrack.frame.management.ProbeRequest;
 import org.tudelft.aircrack.frame.management.ProbeResponse;
 import org.tudelft.aircrack.frame.management.field.InformationElementListCodecFactory;
+import org.tudelft.aircrack.frame.visitor.FrameVisitor;
+import org.tudelft.aircrack.frame.visitor.Visitable;
 
-public class Frame
+public class Frame implements Visitable
 {
 
 	private ReceiveInfo receiveInfo;
@@ -131,4 +133,10 @@ public class Frame
 		return frameControl.toString();
 	}
 
+	@Override
+	public void accept(FrameVisitor visitor)
+	{
+		visitor.visit(this);
+	}
+	
 }

@@ -1,8 +1,12 @@
 package org.tudelft.aircrack;
 
+import java.io.IOException;
+
 import org.codehaus.preon.DecodingException;
 import org.tudelft.aircrack.frame.Address;
 import org.tudelft.aircrack.frame.Frame;
+
+import sun.security.pkcs.EncodingException;
 
 public abstract class Interface
 {
@@ -52,6 +56,17 @@ public abstract class Interface
 			// Decode the frame
 			return Frame.decode(receiveInfo, buf);
 		}
+	}
+	
+	public synchronized TransmitInfo send(Frame frame) throws IOException
+	{
+		
+		byte[] raw = Frame.encode(frame);
+		TransmitInfo transmitInfo = new TransmitInfo();
+		
+		write(raw, transmitInfo);
+		
+		return transmitInfo;
 	}
 
 	/**
