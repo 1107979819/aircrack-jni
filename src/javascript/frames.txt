@@ -1,0 +1,123 @@
+% This file contains information about the structure of 802.11 frame types. gen.js can be used to generate
+% efficient Java parsing code from this data.
+
+% Every frame at least has the FrameControl field
+@Frame
+	% Frame control field
+	
+	# The Protocol Version field is 2 bits in length and is invariant in size and placement across all revisions of
+	# this standard. For this standard, the value of the protocol version is 0. All other values are reserved. The
+	# revision level will be incremented only when a fundamental incompatibility exists between a new revision
+	# and the prior edition of the standard. A MAC entity that receives a frame with a higher revision level than it
+	# supports shall discard the frame without indication to the sending STA or to LLC.
+	b2 ProtocolVersion
+	
+	b2 Type
+	b4 SubType
+	b1 ToDs
+	b1 FromDs
+	b1 MoreFrag
+	b1 Retry
+	b1 PwrMgt
+	b1 MoreData
+	b1 ProtectedFrame
+	b1 Order
+
+% Data frames
+@DataFrame Frame
+
+% -------------------------------------------------------------------------------------------------
+% Management frames
+% -------------------------------------------------------------------------------------------------
+
+% Management frame
+@ManagementFrame Frame
+	u16 DurationId
+	address Address1
+	address SA
+	address BSSID
+	b4 fragmentNumber
+	b12 sequenceNumber
+	
+@BeaconOrProbeResponseFrame[0,8]
+	s8 Timestamp
+	u16 BeaconInterval
+	u16 Capabilities
+	information Information	
+
+@AssociationRequestFrame[0,0]
+
+@AssociationResponseFrame[0,1]
+
+@ReassociationRequestFrame[0,2]
+
+@ReassociationResponseFrame[0,3]
+
+@ProbeRequestFrame[0,4]
+
+@ProbeResponseFrame[0,5]
+
+@BeaconFrame[0,8]
+	timestamp Timestamp
+	u16 BeaconInterval
+	capabilities Capabilities
+	information Information	
+
+@AtimFrame[0,9]
+
+@DisassociationFrame[0,10]
+
+@AuthenticationFrame[0,11]
+
+@DeAuthenticationFrame[0,12]
+
+@ActionFrame[0,13]
+
+% -------------------------------------------------------------------------------------------------
+% Control frames
+% -------------------------------------------------------------------------------------------------
+
+% Control frame
+@ControlFrame Frame
+	u16 DurationId
+
+% Frames that have only an RA field
+@RaFrame ControlFrame
+	address RA
+
+% Frames that have an RA (bssid) and TA field
+@RaTaFrame RaFrame
+	address TA
+
+% Block Ack Request
+@BlockAckControlFrame RaTaFrame
+	b4 Tid
+	b12 Reserved
+
+% Block Ack Request
+@BlockAckReqFrame[1,8] BlockAckControlFrame
+	u16 StartingSequenceControl
+
+% Block Ack
+@BlockAckFrame[1,9] BlockAckControlFrame
+	s128 Bitmap
+	
+% Ps-Poll
+@PsPollFrame[1,10] RaTaFrame
+	
+% Request to send
+@RtsFrame[1,11] RaTaFrame
+
+% Clear to send
+@CtsFrame[1,12] RaFrame
+
+% Ack
+@AckFrame[1,13] RaFrame
+
+% Cf-End
+@CfEndFrame[1,14] RaTaFrame
+
+% Cf-End-Cf-Ack
+@CfEndCfAckFrame[1,15] RaTaFrame
+	
+
