@@ -1,1 +1,1 @@
-java -cp build/aircrack-jni.jar:lib/* -Djava.library.path=. org.tudelft.aircrack.sample.BeaconTrace
+java -cp build/aircrack-jni.jar:lib/* -Djava.library.path=. org.tudelft.aircrack.sample.FakeStation
