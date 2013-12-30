@@ -1,12 +1,12 @@
-adb -s $1 push iwgetid /system/bin
-adb -s $1 shell chmod +x /system/bin/iwgetid
-adb -s $1 push iwlist /system/bin
-adb -s $1 shell chmod +x /system/bin/iwlist
-adb -s $1 push iwpriv /system/bin
-adb -s $1 shell chmod +x /system/bin/iwpriv
-adb -s $1 push iwspy /system/bin
-adb -s $1 shell chmod +x /system/bin/iwspy
-adb -s $1 push iwconfig /system/bin
-adb -s $1 shell chmod +x /system/bin/iwconfig
-adb -s $1 push iwevent /system/bin
-adb -s $1 shell chmod +x /system/bin/iwevent
+cat /sdcard/iwgetid > /system/bin/iwgetid
+chmod 777 /system/bin/iwgetid
+cat /sdcard/iwlist > /system/bin/iwlist
+chmod 777 /system/bin/iwlist
+cat /sdcard/iwpriv > /system/bin/iwpriv
+chmod 777 /system/bin/iwpriv
+cat /sdcard/iwspy > /system/bin/iwspy
+chmod 777 /system/bin/iwspy
+cat /sdcard/iwconfig > /system/bin/iwconfig
+chmod 777 /system/bin/iwconfig
+cat /sdcard/iwevent > /system/bin/iwevent
+chmod 777 /system/bin/iwevent
