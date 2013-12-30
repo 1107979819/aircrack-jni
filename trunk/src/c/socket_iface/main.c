@@ -177,7 +177,7 @@ int handleMessage(int socket, Message * message)
 	Message returnMessage;
 	memset(&returnMessage, 0, sizeof(Message));
 
-	printf("HANDLEMESSAGE MethodID: %d\n", message->methodId);
+//	printf("HANDLEMESSAGE MethodID: %d\n", message->methodId);
 
 	// Precondition
 	if (message->methodId != Open && wi == NULL)
@@ -193,14 +193,14 @@ int handleMessage(int socket, Message * message)
 		if (message->payloadLength > INTERFACENAME_LENGTH-1)
 			return sendError(socket, Open, "Interface name exceeds maximum length");
 
-		printf("Payload length: %d\n", message->payloadLength);
+//		printf("Payload length: %d\n", message->payloadLength);
 
 		// Get interface name from payload
 		memcpy(interfaceName, message->payload, message->payloadLength);
 		interfaceName[message->payloadLength] = 0;
 
 		// Open interface
-		printf("OPEN: [%s]\n", interfaceName);
+//		printf("OPEN: [%s]\n", interfaceName);
 		wi = wi_open(interfaceName);
 
 		if (wi==NULL)
@@ -224,16 +224,16 @@ int handleMessage(int socket, Message * message)
 	case Read:
 
 		// Read a frame
-		printf("\tBlocking for read ...\n");
+//		printf("\tBlocking for read ...\n");
 		bytesRead = wi_read(wi, wifiBuffer, WIFI_BUFFER_SIZE, &rxInfo);
-		printf("\tFrame received\n");
+//		printf("\tFrame received\n");
 
 		if (bytesRead<0)
 			return sendError(socket, Read, "Unable to read from interface.");
 		else
 		{
 			sendPayload(socket, Read, &rxInfo, bytesRead, wifiBuffer);
-			printf("\tFrame sent\n");
+//			printf("\tFrame sent\n");
 		}
 
 		break;
@@ -331,7 +331,7 @@ int main()
 	for (;;)
 	{
 		int done, n;
-		printf("Waiting for a connection... on [echo]\n");
+		printf("Waiting for a connection... on [%s]\n", SOCKET_ADRESS);
 
 		t = sizeof(remote);
 		if ((clientSocket = accept(serverSocket, (struct sockaddr *) &remote, &t)) == -1)
