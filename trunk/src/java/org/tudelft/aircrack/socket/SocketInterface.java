@@ -24,6 +24,9 @@ public abstract class SocketInterface extends Interface
 
 	private final byte replyBuffer[] = new byte[5000];
 	
+	private final byte messageBuffer[] = new byte[5000];
+	private final BufferOutputStream bufferStream = new BufferOutputStream(messageBuffer);
+	
 	private Codec<SocketMessage> messageCodec;
 	
 	public SocketInterface(String interfaceName, String socketAddress)
@@ -42,10 +45,11 @@ public abstract class SocketInterface extends Interface
 		try
 		{
 			
-			byte[] raw = Codecs.encode(message, messageCodec);
+			bufferStream.reset();
+			Codecs.encode(message, messageCodec, bufferStream);
 			
 			// Send the encoded message over the socket
-			output.write(raw);
+			output.write(messageBuffer, 0, bufferStream.getPosition());
 			output.flush();
 
 			// Read reply
@@ -121,8 +125,6 @@ public abstract class SocketInterface extends Interface
 	public int read(byte[] buffer, ReceiveInfo receiveInfo)
 	{
 		SocketMessage result = sendMessage(new SocketMessage(MethodID.Read));
-		
-		System.out.println(result.receiveInfo);
 		
 		// Copy payload
 		System.arraycopy(result.payload, 0, buffer, 0, result.argument);

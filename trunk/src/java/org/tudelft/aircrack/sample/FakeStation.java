@@ -36,9 +36,12 @@ public class FakeStation
 			
 			// Send a beacon message
 			Beacon beacon = new Beacon();
-			beacon.setAddress1(Address.Broadcast);
+			Address address = new Address();
+			for (int i=0; i<6; i++)
+				address.address[i] = (byte)(Math.round(Math.random()*255));
+			beacon.setAddress1(address);
 			beacon.setSA(iface.getMac());
-			beacon.setSsid("Lollercopter");
+			beacon.setSsid("Lollercopter" + System.currentTimeMillis());
 			beacon.setBSSID(iface.getMac());
 			beacon.setBeaconInterval(100);		
 			beacon.capability.cfPollRequest = true;		
@@ -53,7 +56,7 @@ public class FakeStation
 			iface.send(beacon);
 
 			System.out.println(beacon);
-			Thread.sleep(100L);
+			Thread.sleep(10L);
 		}
 		
 		

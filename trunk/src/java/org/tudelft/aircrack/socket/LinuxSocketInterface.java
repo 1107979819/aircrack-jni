@@ -20,6 +20,7 @@ public class LinuxSocketInterface extends SocketInterface
 	{
 		// Open a socket to the native aircrack interface.			
 		socket = new UnixDomainSocketClient(socketAddress, JUDS.SOCK_STREAM);
+		
 		input = socket.getInputStream();
 		output = socket.getOutputStream();
 	}

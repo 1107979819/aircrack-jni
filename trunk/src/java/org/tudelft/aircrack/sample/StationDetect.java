@@ -2,14 +2,11 @@ package org.tudelft.aircrack.sample;
 
 import java.io.IOException;
 
-import org.codehaus.preon.Codec;
-import org.codehaus.preon.Codecs;
 import org.codehaus.preon.DecodingException;
 import org.tudelft.aircrack.JniInterface;
 import org.tudelft.aircrack.frame.Address;
 import org.tudelft.aircrack.frame.Frame;
 import org.tudelft.aircrack.frame.control.CtsFrame;
-import org.tudelft.aircrack.frame.control.RaTaFrame;
 import org.tudelft.aircrack.frame.control.RtsFrame;
 
 public class StationDetect
@@ -21,16 +18,18 @@ public class StationDetect
 		final JniInterface iface = new JniInterface("mon0");
 		iface.open();
 		
-		iface.setChannel(6);
-		
 		// 00:26:37:3b:1e:e6
-		final Address deviceAddress = new Address("00:a1:b0:00:bf:62");
+		// final Address deviceAddress = new Address("00:26:37:3B:1E:E6"); // ZTE blade black
+		// final Address deviceAddress = new Address("78:D6:F0:BF:19:2B"); // Marco
+		// final Address deviceAddress = new Address("00:26:37:98:2C:A3"); // Andrei	
+		final Address deviceAddress = new Address("94:00:70:60:05:FE"); // Lumia
+		// final Address deviceAddress = new Address("A4:ED:4E:EE:24:32"); // Wendo	
+		 
 		
 		// Transmit rate in ms
-		final long txRate = 1000;
+		final long txRate = 10;
 		
-		iface.setChannel(6);
-		
+		iface.setChannel(1);
 
 		new Thread(new Runnable() {
 			@Override
@@ -40,36 +39,23 @@ public class StationDetect
 				while (true)
 				{
 					
-//					iface.setChannel(channel++);
-//					
-//					if (channel>13)
-//						channel = 1;
+					// iface.setChannel(channel++);
 					
+					if (channel>11)
+						channel = 1;
+
 					// Send RTS
 					RtsFrame rts = new RtsFrame();
 					rts.setRA(deviceAddress);
 					rts.setTA(iface.getMac());
-					rts.setDuration(10*1000);
+					rts.setDuration(100);
 					
-					// Encode
-					byte[] raw;
 					try
 					{
-						
-						Codec<RaTaFrame> codec = Codecs.create(RaTaFrame.class);
-						Codecs.encode(rts, codec);
-
-						//raw = Frame.encode(rts);
-						
-						raw = Codecs.encode(rts, codec);
-						
-//						Util.printByteBuffer(raw);
-						
-						iface.write(raw);
-						
-					} catch (IOException e)
+						iface.send(rts);
+					} catch (IOException e1)
 					{
-						e.printStackTrace();
+						e1.printStackTrace();
 					}
 					
 					try
@@ -84,20 +70,13 @@ public class StationDetect
 		}).start();
 
 		long startTime = System.currentTimeMillis();
-		while (System.currentTimeMillis()-startTime < 60*1000)
+		while (true)
 		{
 			
 			// Collect CTS frames
 			Frame frame = iface.receive();
 			if (frame==null)
 				continue;
-			
-//			if (frame instanceof ProbeRequest)
-//			{
-//				ProbeRequest request = (ProbeRequest)frame;
-//				if (!request.getSsid().startsWith("HHID"))
-//					System.out.println(request);
-//			}
 			
 			if (frame instanceof CtsFrame)
 			{
@@ -108,12 +87,20 @@ public class StationDetect
 					System.out.flush();
 				}
 			}
+			
+//			if (frame instanceof DataFrame)
+//			{
+//				DataFrame dataFrame = (DataFrame)frame;
+//				System.out.println(dataFrame);
+//				System.out.println("\t" + frame.getReceiveInfo());
+//				System.out.flush();
+//			}
 
 			Thread.yield();
 			
 		}		
 		
-		iface.close();
+//		iface.close();
 		
 	}
 

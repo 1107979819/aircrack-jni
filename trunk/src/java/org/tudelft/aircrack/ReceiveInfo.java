@@ -6,6 +6,9 @@ import org.codehaus.preon.annotation.Order;
 public class ReceiveInfo
 {
 	
+	private final static int minChannel = 1;
+	private final static int maxChannel = 13;
+
 	@BoundNumber(size="64")
 	@Order(1) public long macTime;
 
@@ -51,6 +54,24 @@ public class ReceiveInfo
 		return channel;
 	}
 	
+	/**
+	 * The channel returned by aircrack in the receive information struct
+	 * tends to be wrong. For example, channel 11 is sometimes reported
+	 * as 158. This method computes the most likely channel. 
+	 * 
+	 * Use <code>getChannel()</code> to get the 'raw' value. 
+	 * 
+	 * @return
+	 */
+	public int getFixedChannel()
+	{
+		if (channel>=minChannel && channel<=maxChannel)
+			return channel;
+		else
+			return (channel - 103) / 5;
+	}
+	
+	
 	public int getFrequency()
 	{
 		return frequency;
@@ -73,7 +94,7 @@ public class ReceiveInfo
 				this.macTime,
 				this.power,
 				this.noise,
-				this.channel,
+				this.getFixedChannel(),
 				this.frequency,
 				this.rate,
 				this.antenna

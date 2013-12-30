@@ -43,7 +43,7 @@
 	s8 Timestamp
 	u16 BeaconInterval
 	u16 Capabilities
-	information Information	
+	information Information
 
 @AssociationRequestFrame[0,0]
 

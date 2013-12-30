@@ -33,6 +33,11 @@ public class TraceLoader
 		// Decode trace element header
 		TraceElement element = Codecs.decode(elementCodec, buf);
 		
+		System.out.println(element.getPayloadLength());
+		
+		if (element.getPayloadLength()==0)
+			return null;
+		
 		// Read variable-sized payload
 		buf = new byte[element.getPayloadLength()];
 		input.read(buf);
@@ -51,10 +56,12 @@ public class TraceLoader
 
 		while (input.available()>=HEADER_SIZE)
 		{
-			ret.add(loadFrame(input));
+			Frame frame = loadFrame(input);
 			
-			if (ret.size()>=150)
-				break;
+			if (frame!=null)
+				ret.add(frame);
+			
+			// if (ret.size()>=150) break;
 		}
 		
 		return ret;
