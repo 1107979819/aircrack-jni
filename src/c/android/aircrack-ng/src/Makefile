@@ -2,25 +2,13 @@ AC_ROOT		= ..
 LIBPCAP		=
 include $(AC_ROOT)/common.mak
 
-# --- Android specific ---
-
-NDK=/home/niels/android-ndk-r7
-TOOLCHAIN=${NDK}/toolchains/arm-linux-androideabi-4.4.3/prebuilt/linux-x86/bin
-
-#OSDEP=../aircrack-ng/src/osdep
-CC=${TOOLCHAIN}/arm-linux-androideabi-gcc
-CFLAGS += --sysroot ${NDK}/platforms/android-4/arch-arm/ -DLinux  -D__int8_t_defined -DAIRCRACK_NG_BYTE_ORDER_DEFINED -fPIC -mandroid -DANDROID -DOS_ANDROID -DLinux
-LFLAGS += --sysroot ${NDK}/platforms/android-4/arch-arm/ -fPIC -mandroid -DANDROID -DOS_ANDROID -DLinux
-
-# --- /Android specific ---
-
 TEST_DIR	= $(AC_ROOT)/test
 
 CFLAGS		+= -Iinclude
 
 iCC             = $(shell find /opt/intel/cc/*/bin/icc)
 iCFLAGS         = -w -mcpu=pentiumpro -march=pentiumpro $(COMMON_CFLAGS)
-iOPTFLAGS       = -O3 -ip -ipo -D_FILE_OFFSET_BITS=64 -D_REVISION=2006
+iOPTFLAGS       = -O3 -ip -ipo -D_FILE_OFFSET_BITS=64
 PROF_DIR	= $(PWD)/prof
 
 BINFILES        = aircrack-ng$(EXE) airdecap-ng$(EXE) packetforge-ng$(EXE) \
