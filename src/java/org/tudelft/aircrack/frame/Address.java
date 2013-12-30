@@ -60,6 +60,15 @@ public class Address implements Comparable<Address>
 	}
 	
 	@Override
+	public boolean equals(Object obj)
+	{
+		if (obj instanceof Address)
+			return compareTo((Address)obj) == 0;
+		else
+			return false;
+	}
+	
+	@Override
 	public String toString()
 	{
 		return String.format("%02x:%02x:%02x:%02x:%02x:%02x",
