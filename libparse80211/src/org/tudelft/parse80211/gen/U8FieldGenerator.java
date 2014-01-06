@@ -6,7 +6,7 @@ import javax.lang.model.element.Element;
 
 import org.tudelft.parse80211.annotations.U8;
 
-public class U8FieldGenerator extends FieldGenerator
+public class U8FieldGenerator extends SimpleFieldGenerator
 {
 	
 	private final U8 annotation;
@@ -20,13 +20,13 @@ public class U8FieldGenerator extends FieldGenerator
 	@Override
 	public void generateGetter(PrintWriter writer)
 	{
-		generateGetter(writer, "int", String.format("return data[%d] & 0xff;", annotation.offset()));
+		generateGetter(writer, "int", String.format("return data[offset+%d] & 0xff;", annotation.offset()));
 	}
 
 	@Override
 	public void generateSetter(PrintWriter writer)
 	{
-		generateSetter(writer, "int", String.format("data[%d] = value;", annotation.offset()));
+		generateSetter(writer, "int", String.format("data[offset+%d] = value;", annotation.offset()));
 	}
 
 }

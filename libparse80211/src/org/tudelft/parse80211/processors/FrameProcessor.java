@@ -10,11 +10,11 @@ import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
-import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic.Kind;
 import javax.tools.JavaFileObject;
 
+import org.tudelft.parse80211.annotations.Mapped;
 import org.tudelft.parse80211.annotations.Bit;
 import org.tudelft.parse80211.annotations.Bits;
 import org.tudelft.parse80211.annotations.U16;
@@ -22,11 +22,13 @@ import org.tudelft.parse80211.annotations.U8;
 import org.tudelft.parse80211.gen.BitFieldGenerator;
 import org.tudelft.parse80211.gen.BitsFieldGenerator;
 import org.tudelft.parse80211.gen.ClassGenerator;
+import org.tudelft.parse80211.gen.FrameClassGenerator;
+import org.tudelft.parse80211.gen.MappedFieldGenerator;
 import org.tudelft.parse80211.gen.U16FieldGenerator;
 import org.tudelft.parse80211.gen.U8FieldGenerator;
 
-@SupportedAnnotationTypes("org.tudelft.parse80211.annotations.Bound")
-public class Processor extends AbstractProcessor
+@SupportedAnnotationTypes("org.tudelft.parse80211.annotations.FrameTemplate")
+public class FrameProcessor extends AbstractProcessor
 {
 
 	@Override
@@ -34,11 +36,12 @@ public class Processor extends AbstractProcessor
 	{
 		note("Entering process: ", environment.processingOver());
 		
+		// Iterate over all supported annotations
 		for (TypeElement annotation : elements)
 			for (Element element : environment.getElementsAnnotatedWith(annotation))
 				if (element.getKind()==ElementKind.CLASS)
 					process((TypeElement)element);
-				
+		
 		return false;
 	}
 	
@@ -48,12 +51,10 @@ public class Processor extends AbstractProcessor
 		
 		Filer filer = processingEnv.getFiler();
 		
-		PackageElement packageElement = (PackageElement)classElement.getEnclosingElement();
-
 		try
 		{
 
-			ClassGenerator gen = new ClassGenerator(classElement);
+			ClassGenerator gen = new FrameClassGenerator(classElement);
 			
 			JavaFileObject jfo = filer.createSourceFile(gen.getClassName());
 			
@@ -79,6 +80,14 @@ public class Processor extends AbstractProcessor
 					// Signed short 
 					if (element.getAnnotation(U16.class)!=null)
 						gen.addGenerator(new U16FieldGenerator(element, element.getAnnotation(U16.class)));
+					
+					// Address					
+					if (element.getAnnotation(Mapped.class)!=null)
+						gen.addGenerator(new MappedFieldGenerator(element,
+								element.getAnnotation(Mapped.class),
+								processingEnv.getTypeUtils().asElement(element.asType()))
+						);
+					
 				}
 					
 			
@@ -92,21 +101,6 @@ public class Processor extends AbstractProcessor
 		}
 	}
 	
-	private void printTree(Element element)
-	{
-		printTree(element, "");
-	}
-	
-	private void printTree(Element element, String indent)
-	{
-	
-		note(indent, element.getSimpleName() + " (" + element.getKind() + ")" + element.getAnnotation(Bit.class));
-		
-		for (Element child : element.getEnclosedElements())
-			printTree(child, indent + "  ");
-	
-	}
-
 	private void note(Object ... msg)
 	{
 		StringBuilder builder = new StringBuilder();

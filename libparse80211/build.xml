@@ -55,7 +55,10 @@
 			
 			<service
 				type="javax.annotation.processing.Processor"
-				provider="org.tudelft.parse80211.processors.Processor"/>
+				>
+				<provider classname="org.tudelft.parse80211.processors.FrameProcessor"/>
+				<provider classname="org.tudelft.parse80211.processors.DecoderProcessor"/>
+			</service>
 
 			<fileset dir="${build-processor}" includes="**/*.class"/>
 		</jar>

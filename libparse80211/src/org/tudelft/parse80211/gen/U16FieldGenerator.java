@@ -6,7 +6,7 @@ import javax.lang.model.element.Element;
 
 import org.tudelft.parse80211.annotations.U16;
 
-public class U16FieldGenerator extends FieldGenerator
+public class U16FieldGenerator extends SimpleFieldGenerator
 {
 	
 	private final U16 annotation;
@@ -20,19 +20,17 @@ public class U16FieldGenerator extends FieldGenerator
 	@Override
 	public void generateGetter(PrintWriter writer)
 	{
-		
 		generateGetter(writer, "int",
-				String.format("return (data[%d] & 0xff) + ((data[%d] & 0xff)<<8);", annotation.offset(), annotation.offset()+1)
+				String.format("return (data[offset+%d] & 0xff) + ((data[offset+%d] & 0xff)<<8);", annotation.offset(), annotation.offset()+1)
 				);
 	}
 
 	@Override
 	public void generateSetter(PrintWriter writer)
 	{
-		
 		generateSetter(writer, "int",
-				String.format("data[%d] = (byte)(value & 0xff);", annotation.offset()),
-				String.format("data[%d] = (byte)((value>>8) & 0xff);", annotation.offset()+1)
+				String.format("data[offset+%d] = (byte)(value & 0xff);", annotation.offset()),
+				String.format("data[offset+%d] = (byte)((value>>8) & 0xff);", annotation.offset()+1)
 				);
 	}
 

@@ -2,22 +2,19 @@ package org.tudelft.parse80211.gen;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 
-import org.tudelft.parse80211.types.ByteBuffer;
-
-public class ClassGenerator implements Generator
+public class ClassGenerator
 {
 
-	private final static Class<?> baseClass = ByteBuffer.class;
+	protected List<Generator> generators = new ArrayList<>();
+	protected HashSet<String> includes = new HashSet<>();
 	
-	private List<Generator> generators = new ArrayList<>();
-	private List<Class<?>> includes = new ArrayList<>();
-	
-	private TypeElement classElement;
+	protected TypeElement classElement;
 	
 	public ClassGenerator(TypeElement classElement)
 	{
@@ -36,9 +33,24 @@ public class ClassGenerator implements Generator
 		return getPackageName(classElement);
 	}
 	
+	public String getClassName(TypeElement classElement)
+	{
+		return getPackageName(classElement) + "." + classElement.getSimpleName();
+	}
+	
 	public String getClassName()
 	{
 		return getPackageName() + "." + classElement.getSimpleName();
+	}
+	
+	public String getSuperClass()
+	{
+		// Super class. Inherit from ByteBuffer if none given.
+		String superClass = classElement.getSuperclass().toString();
+		if (superClass.equals("java.lang.Object"))
+			return null;
+		else
+			return superClass.replace(".template", "");
 	}
 	
 	public void addGenerator(Generator generator)
@@ -48,7 +60,7 @@ public class ClassGenerator implements Generator
 	
 	public void addInclude(Class<?> clazz)
 	{
-		includes.add(clazz);
+		includes.add(clazz.getCanonicalName());
 	}
 	
 	private void writeStart(PrintWriter writer)
@@ -57,41 +69,51 @@ public class ClassGenerator implements Generator
 		writer.println("");
 		
 		// Super class. Inherit from ByteBuffer if none given.
-		String superClass = classElement.getSuperclass().toString();
-		if (superClass.equals("java.lang.Object"))
-			superClass = baseClass.getCanonicalName();
-		else
-			superClass = superClass.replace(".template", "");
+		String superClass = getSuperClass();
+		
+		// Collect imports from generators
+		for (Generator generator : generators)
+			if (generator.getInclude()!=null)
+				includes.add(generator.getInclude());
 		
 		// Generate imports
-		for (Class<?> include : includes)
-			writer.printf("import %s;\n", include.getCanonicalName());
-		
+		for (String include : includes)
+			writer.printf("import %s;\n", include);
+
 		// Import superclass
-		writer.printf("import %s;\n", superClass);
+		if (superClass!=null)
+			writer.printf("import %s;\n", superClass);
+
+		// Blank line
+		if (includes.size()>0 || superClass!=null)
+			writer.println("");
+		
+		// Class declaration
+		writer.printf("public class %s", classElement.getSimpleName());
+		
+		if (superClass!=null)	
+			writer.printf(" extends %s", superClass.substring(superClass.lastIndexOf('.')+1));
 		
 		writer.println("");
-		writer.printf("public class %s extends %s\n",
-				classElement.getSimpleName(),
-				superClass.substring(superClass.lastIndexOf('.')+1)
-				);
 		writer.println("{");
 	}
 
-	private void writeConstructor(PrintWriter writer)
-	{
-		writer.println("");
-		writer.printf("\tpublic %s(byte[] data)\n", classElement.getSimpleName());
-		writer.println("\t{");
-		writer.println("\t\tsuper(data);");
-		writer.println("\t}");
-	}
-	
-	private void writeBody(PrintWriter writer)
+	protected void writeFields(PrintWriter writer)
 	{
 		writer.println("");
 		for (Generator generator : generators)
-			generator.generate(writer);
+			generator.generateField(writer);
+	}
+
+	protected void writeConstructor(PrintWriter writer)
+	{
+	}
+	
+	protected void writeBody(PrintWriter writer)
+	{
+		writer.println("");
+		for (Generator generator : generators)
+			generator.generateMethods(writer);
 	}
 	
 	private void writeEnd(PrintWriter writer)
@@ -100,10 +122,10 @@ public class ClassGenerator implements Generator
 		writer.println("}");
 	}
 
-	@Override
 	public void generate(PrintWriter writer)
 	{
 		writeStart(writer);
+		writeFields(writer);
 		writeConstructor(writer);
 		writeBody(writer);
 		writeEnd(writer);

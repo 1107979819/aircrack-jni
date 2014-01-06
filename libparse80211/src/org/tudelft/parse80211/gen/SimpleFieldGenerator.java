@@ -4,22 +4,15 @@ import java.io.PrintWriter;
 
 import javax.lang.model.element.Element;
 
-public abstract class FieldGenerator implements Generator
+public abstract class SimpleFieldGenerator implements Generator
 {
 
-	private final Element field;
+	protected final Element field;
 
-	public FieldGenerator(Element field)
+	public SimpleFieldGenerator(Element field)
 	{
 		super();
 		this.field = field;
-	}
-	
-	public void generate(PrintWriter writer)
-	{
-		generateGetter(writer);
-		writer.println();
-		generateSetter(writer);
 	}
 	
 	public String getFieldName()
@@ -27,7 +20,7 @@ public abstract class FieldGenerator implements Generator
 		return field.getSimpleName().toString();
 	}
 
-	private String getModifiedFieldName()
+	protected String getModifiedFieldName()
 	{
 		String ret = field.getSimpleName().toString();
 		return ret.substring(0, 1).toUpperCase() + ret.substring(1);
@@ -54,5 +47,29 @@ public abstract class FieldGenerator implements Generator
 	public abstract void generateGetter(PrintWriter writer);
 	
 	public abstract void generateSetter(PrintWriter writer);
+	
+	@Override
+	public void generateField(PrintWriter writer)
+	{
+	}
+	
+	@Override
+	public void generateInitializer(PrintWriter writer)
+	{
+	}
+	
+	@Override
+	public void generateMethods(PrintWriter writer)
+	{
+		generateGetter(writer);
+		writer.println();
+		generateSetter(writer);
+	}
+	
+	@Override
+	public String getInclude()
+	{
+		return null;
+	}
 
 }

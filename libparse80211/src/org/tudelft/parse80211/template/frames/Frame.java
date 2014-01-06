@@ -2,9 +2,9 @@ package org.tudelft.parse80211.template.frames;
 
 import org.tudelft.parse80211.annotations.Bit;
 import org.tudelft.parse80211.annotations.Bits;
-import org.tudelft.parse80211.annotations.Bound;
+import org.tudelft.parse80211.annotations.FrameTemplate;
 
-@Bound
+@FrameTemplate
 public class Frame
 {
 
