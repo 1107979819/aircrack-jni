@@ -6,7 +6,7 @@ import javax.lang.model.element.Element;
 
 import org.tudelft.parse80211.annotations.Bits;
 
-public class BitsFieldGenerator extends FieldGenerator
+public class BitsFieldGenerator extends SimpleFieldGenerator
 {
 	
 	private final Bits annotation;
@@ -21,14 +21,14 @@ public class BitsFieldGenerator extends FieldGenerator
 	public void generateGetter(PrintWriter writer)
 	{
 		int mask = (1 << annotation.count()) - 1;
-		generateGetter(writer, "int", String.format("return (data[%d] >> %d) & 0x%02x;", annotation.offset(), annotation.start(), mask));
+		generateGetter(writer, "int", String.format("return (data[offset+%d] >> %d) & 0x%02x;", annotation.offset(), annotation.start(), mask));
 	}
 
 	@Override
 	public void generateSetter(PrintWriter writer)
 	{
 		int mask = (1 << annotation.count()) - 1;
-		generateSetter(writer, "int", String.format("data[%d] = (byte)value;", annotation.offset()));
+		generateSetter(writer, "int", String.format("data[offset+%d] = (byte)value;", annotation.offset()));
 	}
 
 }

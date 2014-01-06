@@ -4,8 +4,9 @@ import org.tudelft.parse80211.annotations.FrameTemplate;
 import org.tudelft.parse80211.annotations.FrameType;
 
 @FrameTemplate
-@FrameType(type=1, subType=12)
-public class Cts extends RtsCts
+@FrameType(type=1, subType=11)
+public class Rts extends RtsCts
 {
+
 
 }

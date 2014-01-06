@@ -3,7 +3,7 @@ package org.tudelft.parse80211.types;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Address implements Comparable<Address>
+public class Address extends ByteBuffer implements Comparable<Address>
 {
 
 	public final static Address Broadcast = new Address(new byte[] { (byte)0xff, (byte)0xff, (byte)0xff, (byte)0xff, (byte)0xff, (byte)0xff }); 
@@ -11,13 +11,17 @@ public class Address implements Comparable<Address>
 	
 	private final static Pattern addressPattern = Pattern.compile("([0-9a-fA-F]{2}):([0-9a-fA-F]{2}):([0-9a-fA-F]{2}):([0-9a-fA-F]{2}):([0-9a-fA-F]{2}):([0-9a-fA-F]{2})");
 	
-	public byte[] address;
-	
-	public Address()
+	public Address(byte[] address)
 	{
-		this.address = new byte[6];
+		super(address);
 	}
 	
+	public Address(byte[] address, int offset)
+	{
+		super(address, offset);
+	}
+	
+	/*
 	public Address(byte[] address)
 	{
 		if (address.length!=6) throw new IllegalArgumentException("MAC address has to be six bytes long");
@@ -26,23 +30,19 @@ public class Address implements Comparable<Address>
 		for (int i=0; i<address.length; i++)
 			this.address[i] = address[i];
 	}
+	*/
 	
 	public Address(String address)
 	{
+		super(new byte[6]);
 		Matcher matcher = addressPattern.matcher(address);
 		
 		if (matcher.matches())
 		{
-			this.address = new byte[6];
 			for (int i=0; i<matcher.groupCount(); i++)
-				this.address[i] = (byte)Integer.parseInt(matcher.group(i+1), 16);
+				this.data[i] = (byte)Integer.parseInt(matcher.group(i+1), 16);
 		} else
 			throw new IllegalArgumentException("Not a properly formatted MAC address: " + address);
-	}
-	
-	public byte[] getAddress()
-	{
-		return address;
 	}
 	
 	@Override
@@ -50,8 +50,8 @@ public class Address implements Comparable<Address>
 	{
 		for (int i=5; i>=0; i--)
 		{
-			if (address[i]<o.address[i]) return -1;
-			if (address[i]>o.address[i]) return 1;
+			if (data[offset+i]<o.data[o.offset+i]) return -1;
+			if (data[offset+i]>o.data[o.offset+i]) return 1;
 		}
 		return 0;
 	}
@@ -69,12 +69,12 @@ public class Address implements Comparable<Address>
 	public String toString()
 	{
 		return String.format("%02x:%02x:%02x:%02x:%02x:%02x",
-				address[0] & 0xff,
-				address[1] & 0xff,
-				address[2] & 0xff, 
-				address[3] & 0xff,
-				address[4] & 0xff,
-				address[5] & 0xff 
+				data[offset+0] & 0xff,
+				data[offset+1] & 0xff,
+				data[offset+2] & 0xff, 
+				data[offset+3] & 0xff,
+				data[offset+4] & 0xff,
+				data[offset+5] & 0xff 
 				);
 	}
 

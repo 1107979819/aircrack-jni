@@ -5,6 +5,12 @@ import java.io.PrintWriter;
 public interface Generator
 {
 
-	public void generate(PrintWriter writer);
+	public String getInclude();
+	
+	public void generateField(PrintWriter writer);
+
+	public void generateInitializer(PrintWriter writer);
+	
+	public void generateMethods(PrintWriter writer);
 
 }
