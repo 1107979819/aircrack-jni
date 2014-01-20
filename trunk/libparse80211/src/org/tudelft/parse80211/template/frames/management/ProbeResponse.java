@@ -4,8 +4,8 @@ import org.tudelft.parse80211.annotations.FrameTemplate;
 import org.tudelft.parse80211.annotations.FrameType;
 
 @FrameTemplate
-@FrameType(type=0, subType=8, size=36)
-public class Beacon extends BeaconOrProbeResponse
+@FrameType(type=0, subType=5, size=36)
+public class ProbeResponse extends BeaconOrProbeResponse
 {
 	
 }

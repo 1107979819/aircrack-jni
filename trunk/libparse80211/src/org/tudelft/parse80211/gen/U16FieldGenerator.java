@@ -21,7 +21,7 @@ public class U16FieldGenerator extends SimpleFieldGenerator
 	public void generateGetter(PrintWriter writer)
 	{
 		generateGetter(writer, "int",
-				String.format("return (data[offset+%d] & 0xff) + ((data[offset+%d] & 0xff)<<8);", annotation.offset(), annotation.offset()+1)
+				String.format("return (buffer.data[offset+%d] & 0xff) + ((buffer.data[offset+%d] & 0xff)<<8);", annotation.offset(), annotation.offset()+1)
 				);
 	}
 
@@ -29,8 +29,8 @@ public class U16FieldGenerator extends SimpleFieldGenerator
 	public void generateSetter(PrintWriter writer)
 	{
 		generateSetter(writer, "int",
-				String.format("data[offset+%d] = (byte)(value & 0xff);", annotation.offset()),
-				String.format("data[offset+%d] = (byte)((value>>8) & 0xff);", annotation.offset()+1)
+				String.format("buffer.data[offset+%d] = (byte)(value & 0xff);", annotation.offset()),
+				String.format("buffer.data[offset+%d] = (byte)((value>>8) & 0xff);", annotation.offset()+1)
 				);
 	}
 

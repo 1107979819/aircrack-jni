@@ -3,7 +3,7 @@ package org.tudelft.parse80211.types;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Address extends ByteBuffer implements Comparable<Address>
+public class Address extends BufferBacked implements Comparable<Address>
 {
 
 	public final static Address Broadcast = new Address(new byte[] { (byte)0xff, (byte)0xff, (byte)0xff, (byte)0xff, (byte)0xff, (byte)0xff }); 
@@ -13,12 +13,12 @@ public class Address extends ByteBuffer implements Comparable<Address>
 	
 	public Address(byte[] address)
 	{
-		super(address);
+		super(new ByteBuffer(address));
 	}
 	
-	public Address(byte[] address, int offset)
+	public Address(ByteBuffer buffer, int offset)
 	{
-		super(address, offset);
+		super(buffer, offset);
 	}
 	
 	/*
@@ -34,13 +34,13 @@ public class Address extends ByteBuffer implements Comparable<Address>
 	
 	public Address(String address)
 	{
-		super(new byte[6]);
+		super(new ByteBuffer(new byte[6]));
 		Matcher matcher = addressPattern.matcher(address);
 		
 		if (matcher.matches())
 		{
 			for (int i=0; i<matcher.groupCount(); i++)
-				this.data[i] = (byte)Integer.parseInt(matcher.group(i+1), 16);
+				this.buffer.data[i] = (byte)Integer.parseInt(matcher.group(i+1), 16);
 		} else
 			throw new IllegalArgumentException("Not a properly formatted MAC address: " + address);
 	}
@@ -50,8 +50,8 @@ public class Address extends ByteBuffer implements Comparable<Address>
 	{
 		for (int i=5; i>=0; i--)
 		{
-			if (data[offset+i]<o.data[o.offset+i]) return -1;
-			if (data[offset+i]>o.data[o.offset+i]) return 1;
+			if (buffer.data[offset+i]<o.buffer.data[o.offset+i]) return -1;
+			if (buffer.data[offset+i]>o.buffer.data[o.offset+i]) return 1;
 		}
 		return 0;
 	}
@@ -69,12 +69,12 @@ public class Address extends ByteBuffer implements Comparable<Address>
 	public String toString()
 	{
 		return String.format("%02x:%02x:%02x:%02x:%02x:%02x",
-				data[offset+0] & 0xff,
-				data[offset+1] & 0xff,
-				data[offset+2] & 0xff, 
-				data[offset+3] & 0xff,
-				data[offset+4] & 0xff,
-				data[offset+5] & 0xff 
+				buffer.data[offset+0] & 0xff,
+				buffer.data[offset+1] & 0xff,
+				buffer.data[offset+2] & 0xff, 
+				buffer.data[offset+3] & 0xff,
+				buffer.data[offset+4] & 0xff,
+				buffer.data[offset+5] & 0xff 
 				);
 	}
 

@@ -20,13 +20,13 @@ public class U8FieldGenerator extends SimpleFieldGenerator
 	@Override
 	public void generateGetter(PrintWriter writer)
 	{
-		generateGetter(writer, "int", String.format("return data[offset+%d] & 0xff;", annotation.offset()));
+		generateGetter(writer, "int", String.format("return buffer.data[offset+%d] & 0xff;", annotation.offset()));
 	}
 
 	@Override
 	public void generateSetter(PrintWriter writer)
 	{
-		generateSetter(writer, "int", String.format("data[offset+%d] = value;", annotation.offset()));
+		generateSetter(writer, "int", String.format("buffer.data[offset+%d] = value;", annotation.offset()));
 	}
 
 }

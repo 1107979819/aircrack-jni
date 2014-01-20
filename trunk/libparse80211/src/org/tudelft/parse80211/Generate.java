@@ -1,6 +1,7 @@
 package org.tudelft.parse80211;
 
 import org.tudelft.parse80211.frames.control.Control;
+import org.tudelft.parse80211.types.ByteBuffer;
 
 
 public class Generate
@@ -18,7 +19,7 @@ public class Generate
 				(byte)0x00
 				};
 		
-		Control frame = new Control(data);
+		Control frame = new Control(new ByteBuffer(data));
 		System.out.println(frame.getProtocolVersion());
 		System.out.println(frame.getType());
 		System.out.println(frame.getSubType());

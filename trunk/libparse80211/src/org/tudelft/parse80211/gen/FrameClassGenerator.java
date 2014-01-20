@@ -4,16 +4,18 @@ import java.io.PrintWriter;
 
 import javax.lang.model.element.TypeElement;
 
+import org.tudelft.parse80211.types.BufferBacked;
 import org.tudelft.parse80211.types.ByteBuffer;
 
 public class FrameClassGenerator extends ClassGenerator
 {
 
-	protected final static Class<?> baseClass = ByteBuffer.class;
+	protected final static Class<?> baseClass = BufferBacked.class;
 
 	public FrameClassGenerator(TypeElement classElement)
 	{
 		super(classElement);
+		addInclude(ByteBuffer.class);
 	}
 	
 	// Super class. Inherit from ByteBuffer if none given.
@@ -31,9 +33,9 @@ public class FrameClassGenerator extends ClassGenerator
 	protected void writeConstructor(PrintWriter writer)
 	{
 		writer.println("");
-		writer.printf("\tpublic %s(byte[] data)\n", classElement.getSimpleName());
+		writer.printf("\tpublic %s(ByteBuffer buffer)\n", classElement.getSimpleName());
 		writer.println("\t{");
-		writer.println("\t\tsuper(data);");
+		writer.println("\t\tsuper(buffer);");
 		
 		writer.println("");
 		for (Generator generator : generators)

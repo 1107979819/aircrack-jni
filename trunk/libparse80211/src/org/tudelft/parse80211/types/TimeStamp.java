@@ -1,11 +1,11 @@
 package org.tudelft.parse80211.types;
 
-public class TimeStamp extends ByteBuffer
+public class TimeStamp extends BufferBacked
 {
 
-	public TimeStamp(byte[] data, int offset)
+	public TimeStamp(ByteBuffer buffer, int offset)
 	{
-		super(data, offset);
+		super(buffer, offset);
 	}
 
 }
