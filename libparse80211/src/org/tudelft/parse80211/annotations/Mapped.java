@@ -4,5 +4,6 @@ public @interface Mapped
 {
 	
 	int offset();
+	boolean variableSize() default false;
 
 }

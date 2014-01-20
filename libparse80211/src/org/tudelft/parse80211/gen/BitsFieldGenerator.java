@@ -21,14 +21,14 @@ public class BitsFieldGenerator extends SimpleFieldGenerator
 	public void generateGetter(PrintWriter writer)
 	{
 		int mask = (1 << annotation.count()) - 1;
-		generateGetter(writer, "int", String.format("return (data[offset+%d] >> %d) & 0x%02x;", annotation.offset(), annotation.start(), mask));
+		generateGetter(writer, "int", String.format("return (buffer.data[offset+%d] >> %d) & 0x%02x;", annotation.offset(), annotation.start(), mask));
 	}
 
 	@Override
 	public void generateSetter(PrintWriter writer)
 	{
-		int mask = (1 << annotation.count()) - 1;
-		generateSetter(writer, "int", String.format("data[offset+%d] = (byte)value;", annotation.offset()));
+		// int mask = (1 << annotation.count()) - 1;
+		generateSetter(writer, "int", String.format("buffer.data[offset+%d] = (byte)value;", annotation.offset()));
 	}
 
 }

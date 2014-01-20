@@ -5,5 +5,6 @@ public @interface FrameType
 	
 	int type();
 	int subType();
+	int size();
 
 }

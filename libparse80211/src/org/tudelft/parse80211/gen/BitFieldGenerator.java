@@ -20,7 +20,7 @@ public class BitFieldGenerator extends SimpleFieldGenerator
 	@Override
 	public void generateGetter(PrintWriter writer)
 	{
-		String body = String.format("return (data[offset+%d] & 0x%02x) != 0;", annotation.offset(), 1<<annotation.bit());
+		String body = String.format("return (buffer.data[offset+%d] & 0x%02x) != 0;", annotation.offset(), 1<<annotation.bit());
 		generateGetter(writer, "boolean", body);
 	}
 
@@ -29,9 +29,9 @@ public class BitFieldGenerator extends SimpleFieldGenerator
 	{
 		generateSetter(writer, "boolean",
 				"if (value)",
-				String.format("\tdata[offset+%d] |= 0x%02x;", annotation.offset(), 1<<annotation.bit()),
+				String.format("\tbuffer.data[offset+%d] |= 0x%02x;", annotation.offset(), 1<<annotation.bit()),
 				"else",
-				String.format("\tdata[offset+%d] &= ~0x%02x;", annotation.offset(), 1<<annotation.bit())
+				String.format("\tbuffer.data[offset+%d] &= ~0x%02x;", annotation.offset(), 1<<annotation.bit())
 				);
 	}
 

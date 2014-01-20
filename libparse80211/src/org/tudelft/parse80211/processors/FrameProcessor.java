@@ -81,12 +81,15 @@ public class FrameProcessor extends AbstractProcessor
 					if (element.getAnnotation(U16.class)!=null)
 						gen.addGenerator(new U16FieldGenerator(element, element.getAnnotation(U16.class)));
 					
-					// Address					
+					// Address, Element List					
 					if (element.getAnnotation(Mapped.class)!=null)
+					{
+						note("mapped: " + element.getSimpleName());
 						gen.addGenerator(new MappedFieldGenerator(element,
 								element.getAnnotation(Mapped.class),
 								processingEnv.getTypeUtils().asElement(element.asType()))
 						);
+					}
 					
 				}
 					
