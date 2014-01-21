@@ -1,6 +1,6 @@
 package org.tudelft.parse80211.annotations;
 
-public @interface FrameTemplate
+public @interface Encoder
 {
 
 }

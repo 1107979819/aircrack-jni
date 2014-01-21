@@ -1,12 +1,13 @@
 package org.tudelft.parse80211.template.frames.management;
 
-import org.tudelft.parse80211.annotations.FrameTemplate;
 import org.tudelft.parse80211.annotations.Mapped;
+import org.tudelft.parse80211.annotations.Template;
 import org.tudelft.parse80211.annotations.U16;
+import org.tudelft.parse80211.template.fields.Capability;
 import org.tudelft.parse80211.types.InformationList;
 import org.tudelft.parse80211.types.TimeStamp;
 
-@FrameTemplate
+@Template
 public class BeaconOrProbeResponse extends Management
 {
 
@@ -14,7 +15,7 @@ public class BeaconOrProbeResponse extends Management
 	
 	@U16(offset=32) int beaconInterval;
 
-	@U16(offset=34) int capability;
+	@Mapped(offset=34) Capability capability;
 	
 	@Mapped(offset=36, variableSize=true) InformationList informationList; 
 

@@ -35,14 +35,25 @@ public class Address extends BufferBacked implements Comparable<Address>
 	public Address(String address)
 	{
 		super(new ByteBuffer(new byte[6]));
+		set(address);
+	}
+	
+	public void set(String address)
+	{
 		Matcher matcher = addressPattern.matcher(address);
 		
 		if (matcher.matches())
 		{
 			for (int i=0; i<matcher.groupCount(); i++)
-				this.buffer.data[i] = (byte)Integer.parseInt(matcher.group(i+1), 16);
+				this.buffer.data[offset+i] = (byte)Integer.parseInt(matcher.group(i+1), 16);
 		} else
 			throw new IllegalArgumentException("Not a properly formatted MAC address: " + address);
+	}
+	
+	public void set(Address address)
+	{
+		for (int i=0; i<6; i++)
+			buffer.data[offset+i] = address.buffer.data[address.offset+i];
 	}
 	
 	@Override

@@ -1,12 +1,12 @@
 package org.tudelft.parse80211.template.frames.management;
 
-import org.tudelft.parse80211.annotations.FrameTemplate;
+import org.tudelft.parse80211.annotations.Template;
 import org.tudelft.parse80211.annotations.Mapped;
 import org.tudelft.parse80211.annotations.U16;
 import org.tudelft.parse80211.template.frames.Frame;
 import org.tudelft.parse80211.types.Address;
 
-@FrameTemplate
+@Template
 public class Management extends Frame
 {
 	

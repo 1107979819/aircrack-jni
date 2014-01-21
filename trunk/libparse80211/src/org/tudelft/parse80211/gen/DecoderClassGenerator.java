@@ -1,25 +1,20 @@
 package org.tudelft.parse80211.gen;
 
 import java.io.PrintWriter;
-import java.util.ArrayList;
 
 import javax.lang.model.element.TypeElement;
 
 import org.tudelft.parse80211.annotations.FrameType;
 import org.tudelft.parse80211.types.BufferBacked;
-import org.tudelft.parse80211.types.ByteBuffer;
 
-public class DecoderClassGenerator extends ClassGenerator
+public class DecoderClassGenerator extends EncoderDecoderClassGenerator
 {
 
 	protected final static Class<?> baseClass = BufferBacked.class;
 
-	private ArrayList<TypeElement> frames = new ArrayList<>();
-
 	public DecoderClassGenerator(TypeElement classElement)
 	{
 		super(classElement);
-		addInclude(ByteBuffer.class);
 	}
 
 	// Inherit from ByteBuffer
@@ -27,11 +22,6 @@ public class DecoderClassGenerator extends ClassGenerator
 	public String getSuperClass()
 	{
 		return baseClass.getCanonicalName();
-	}
-
-	public void addFrameType(TypeElement frame)
-	{
-		frames.add(frame);
 	}
 
 	@Override
@@ -59,8 +49,7 @@ public class DecoderClassGenerator extends ClassGenerator
 		{
 			FrameType type = element.getAnnotation(FrameType.class);
 			int index = type.type() | (type.subType()<<2);
-			String classname = getClassName(element);
-			writer.printf("\t\tframes[%d] = new %s(buffer);\n", index, classname);
+			writer.printf("\t\tframes[%d] = new %s(buffer);\n", index, element.getSimpleName());
 		}
 		
 		writer.println("\t}");

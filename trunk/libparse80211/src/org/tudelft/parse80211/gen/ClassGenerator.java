@@ -63,6 +63,11 @@ public class ClassGenerator
 		includes.add(clazz.getCanonicalName());
 	}
 	
+	public void addInclude(String canonicalName)
+	{
+		includes.add(canonicalName);
+	}
+	
 	private void writeStart(PrintWriter writer)
 	{
 		writer.printf("package %s;\n", getPackageName());

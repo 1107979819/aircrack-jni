@@ -22,12 +22,12 @@ import org.tudelft.parse80211.annotations.U8;
 import org.tudelft.parse80211.gen.BitFieldGenerator;
 import org.tudelft.parse80211.gen.BitsFieldGenerator;
 import org.tudelft.parse80211.gen.ClassGenerator;
-import org.tudelft.parse80211.gen.FrameClassGenerator;
+import org.tudelft.parse80211.gen.TemplateClassGenerator;
 import org.tudelft.parse80211.gen.MappedFieldGenerator;
 import org.tudelft.parse80211.gen.U16FieldGenerator;
 import org.tudelft.parse80211.gen.U8FieldGenerator;
 
-@SupportedAnnotationTypes("org.tudelft.parse80211.annotations.FrameTemplate")
+@SupportedAnnotationTypes("org.tudelft.parse80211.annotations.Template")
 public class FrameProcessor extends AbstractProcessor
 {
 
@@ -54,7 +54,7 @@ public class FrameProcessor extends AbstractProcessor
 		try
 		{
 
-			ClassGenerator gen = new FrameClassGenerator(classElement);
+			ClassGenerator gen = new TemplateClassGenerator(classElement);
 			
 			JavaFileObject jfo = filer.createSourceFile(gen.getClassName());
 			

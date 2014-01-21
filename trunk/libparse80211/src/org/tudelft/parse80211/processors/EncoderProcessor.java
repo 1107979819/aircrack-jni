@@ -13,10 +13,10 @@ import javax.lang.model.element.TypeElement;
 import javax.tools.JavaFileObject;
 
 import org.tudelft.parse80211.annotations.FrameType;
-import org.tudelft.parse80211.gen.DecoderClassGenerator;
+import org.tudelft.parse80211.gen.EncoderClassGenerator;
 
-@SupportedAnnotationTypes("org.tudelft.parse80211.annotations.Decoder")
-public class DecoderProcessor extends Processor
+@SupportedAnnotationTypes("org.tudelft.parse80211.annotations.Encoder")
+public class EncoderProcessor extends Processor
 {
 
 	@Override
@@ -34,12 +34,14 @@ public class DecoderProcessor extends Processor
 	
 	private void generateDecoder(TypeElement classElement, RoundEnvironment environment)
 	{
+		note("Generating Encoder class");
+		
 		Filer filer = processingEnv.getFiler();
 		
 		try
 		{
 
-			DecoderClassGenerator gen = new DecoderClassGenerator(classElement);
+			EncoderClassGenerator gen = new EncoderClassGenerator(classElement);
 			
 			JavaFileObject jfo = filer.createSourceFile(gen.getClassName());
 			
