@@ -6,7 +6,7 @@ import org.tudelft.aircrack.socket.LinuxSocketInterface;
 import org.tudelft.aircrack.socket.SocketInterface;
 import org.tudelft.parse80211.frames.Decoder;
 import org.tudelft.parse80211.frames.Frame;
-import org.tudelft.parse80211.frames.management.ProbeRequest;
+import org.tudelft.parse80211.frames.data.Data;
 import org.tudelft.parse80211.types.ByteBuffer;
 
 public class Mon
@@ -38,17 +38,26 @@ public class Mon
 				Frame frame = decoder.decode(rx);
 				
 				// System.out.printf("%d %2d %s\n", frame.getType(), frame.getSubType(), frame.getClass().toString());
-				
-				if (frame instanceof ProbeRequest)
-				{
-					ProbeRequest beacon = (ProbeRequest)frame;
-					
+
+				/*
+				if (frame.getClass()==Frame.class)
 					System.out.printf("%d %2d %s\n", frame.getType(), frame.getSubType(), frame.getClass().toString());
-					System.out.println(beacon.getInformationList().getSSID());
-
-					for (int i=0; i<beacon.getInformationList().count(); i++)
-						System.out.println("\t" + beacon.getInformationList().get(i));
-
+					*/
+				
+				if (frame instanceof Data)
+				{
+					Data beacon = (Data)frame;
+					
+					System.out.println(frame.getBuffer().toHex());
+					
+					// beacon.getPayload().getData()
+					
+//					System.out.printf("%d %2d %s\n", frame.getType(), frame.getSubType(), frame.getClass().toString());
+//					System.out.println(beacon.getInformationList().getSSID());
+//					
+//					for (int i=0; i<beacon.getInformationList().count(); i++)
+//						System.out.println("\t" + beacon.getInformationList().get(i));
+					
 				}
 				
 			}

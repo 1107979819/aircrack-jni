@@ -58,6 +58,7 @@
 				>
 				<provider classname="org.tudelft.parse80211.processors.FrameProcessor"/>
 				<provider classname="org.tudelft.parse80211.processors.DecoderProcessor"/>
+				<provider classname="org.tudelft.parse80211.processors.EncoderProcessor"/>
 			</service>
 
 			<fileset dir="${build-processor}" includes="**/*.class"/>

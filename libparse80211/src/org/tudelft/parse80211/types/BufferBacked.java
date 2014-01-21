@@ -17,9 +17,9 @@ public class BufferBacked
 		this(data, 0);
 	}
 	
-	public byte[] getData()
+	public ByteBuffer getBuffer()
 	{
-		return buffer.data;
+		return buffer;
 	}
 
 }

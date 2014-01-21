@@ -1,10 +1,10 @@
 package org.tudelft.parse80211.template.frames.control;
 
-import org.tudelft.parse80211.annotations.FrameTemplate;
+import org.tudelft.parse80211.annotations.Template;
 import org.tudelft.parse80211.annotations.U16;
 import org.tudelft.parse80211.template.frames.Frame;
 
-@FrameTemplate
+@Template
 public class Control extends Frame
 {
 	

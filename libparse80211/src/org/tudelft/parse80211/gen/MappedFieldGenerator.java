@@ -21,7 +21,7 @@ public class MappedFieldGenerator extends SimpleFieldGenerator
 	
 	private String getTypeName()
 	{
-		return type.toString();
+		return type.toString().replaceAll(".template", "");
 	}
 
 	private String getSimpleTypeName()

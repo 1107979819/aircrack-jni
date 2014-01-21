@@ -11,11 +11,6 @@ public class ByteBuffer
 		this.data = data;
 		this.size = data.length;
 	}
-	
-	public int getSize()
-	{
-		return size;
-	}
 
 	private final static int printWidth = 16;
 
@@ -27,10 +22,11 @@ public class ByteBuffer
 		{
 			
 			// Avoid out-of-bounds exceptions
-			if (start+i>=count) break;
-			
-			// Print hex byte
-			buffer.append(String.format("%02x ", buf[start+i] & 0xff));
+			if (start+i>=count)
+				buffer.append("  ");
+			else
+				// Print hex byte
+				buffer.append(String.format("%02x ", buf[start+i] & 0xff));
 		}
 		
 		// Print divider
@@ -41,7 +37,7 @@ public class ByteBuffer
 		{
 			
 			// Avoid out-of-bounds exceptions
-			if (start+i>=count) break;
+			if (start+i>=count) break; 
 			
 			// Print char
 			char c = (buf[start+i] > 32 && buf[start+i] < 255) ? (char)buf[start+i] : ' ';
