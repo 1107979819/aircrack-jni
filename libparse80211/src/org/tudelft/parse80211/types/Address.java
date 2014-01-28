@@ -21,6 +21,11 @@ public class Address extends BufferBacked implements Comparable<Address>
 		super(buffer, offset);
 	}
 	
+	public Address(BufferBacked buffer)
+	{
+		super(buffer.getBuffer(), buffer.offset);
+	}
+	
 	/*
 	public Address(byte[] address)
 	{

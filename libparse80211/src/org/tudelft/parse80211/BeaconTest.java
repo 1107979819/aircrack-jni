@@ -1,51 +1,34 @@
 package org.tudelft.parse80211;
 
 import java.io.IOException;
+import java.util.Date;
 
-import org.codehaus.preon.DecodingException;
-import org.tudelft.aircrack.ReceiveInfo;
-import org.tudelft.aircrack.TransmitInfo;
-import org.tudelft.aircrack.frame.management.field.ElementId;
-import org.tudelft.aircrack.frame.management.field.InformationElement;
-import org.tudelft.aircrack.socket.LinuxSocketInterface;
-import org.tudelft.aircrack.socket.SocketInterface;
-import org.tudelft.parse80211.frames.Decoder;
-import org.tudelft.parse80211.frames.Encoder;
-import org.tudelft.parse80211.frames.Frame;
 import org.tudelft.parse80211.frames.management.Beacon;
-import org.tudelft.parse80211.types.ByteBuffer;
+import org.tudelft.parse80211.socket.LinuxSocketInterface;
+import org.tudelft.parse80211.socket.SocketInterface;
+import org.tudelft.parse80211.types.InformationElementId;
 
 public class BeaconTest
 {
 	
-	public static void main(String[] args) throws DecodingException, InterruptedException, IOException
+	public static void main(String[] args) throws InterruptedException, IOException
 	{
 		
 		SocketInterface sock = new LinuxSocketInterface("mon0", "@aircrack");
 		sock.open();
 		
-		// sock.setChannel(11);
-		
-		byte[] data = new byte[8192];
-		ByteBuffer buffer = new ByteBuffer(data);
-		ReceiveInfo receiveInfo = new ReceiveInfo();
-
-		// org.tudelft.parse80211.frames.Frame frame = new org.tudelft.parse80211.frames.Frame(data);
-		
-		Encoder encoder = new Encoder();
-
-		// Decoder decoder = new Decoder(buffer);
-		Decoder decoder = new Decoder(encoder.getBuffer());
-		
 		while (true)
 		{
 			
-			Beacon beacon = encoder.getBeacon();
+			byte buf[] = sock.getEncoder().getBuffer().data;
+			for (int i=0; i<buf.length; i++)
+				buf[i] = 0;
 			
-			System.out.println("Buffer Size: " + beacon.getBuffer().size);
-			System.out.println("Count: " + beacon.getInformationList().count());
+			Beacon beacon = sock.getEncoder().getBeacon();
 			
-			beacon.getDA().set("00:00:00:00:00:00");
+			// System.out.println(sock.getEncoder().getBuffer().toHex(256));
+
+			beacon.getDA().set("ff:ff:ff:ff:ff:ff");
 			beacon.getSA().set("12:34:56:78:9a:bc");
 			beacon.getBSSID().set("12:34:56:78:9a:bc");
 			
@@ -55,26 +38,28 @@ public class BeaconTest
 			beacon.getCapability().setChannelAgility(true);
 			beacon.getCapability().setDsssOfdm(true);
 			
+			Date now = new Date();
+			String ssid = String.format("%02d:%02d", now.getHours(), now.getMinutes());
+			
+			beacon.getInformationList().addInformationElement(InformationElementId.SSID, ssid.getBytes("UTF-8"));
+			beacon.getInformationList().addInformationElement(InformationElementId.SupportedRates, new byte[] { (byte)0x82, (byte)0x84, (byte)0x8b, (byte)0x96 });
+
+//			System.out.println("Buffer Size: " + beacon.getBuffer().size);
+//			System.out.println("Buffer Offset: " + beacon.getInformationList().getOffset());
+//			System.out.println("Count: " + beacon.getInformationList().count());
+//			System.out.println(sock.getEncoder().getBuffer().toHex(63));
+			
 //			beacon.setAddress1(address);
 //			beacon.setSA(iface.getMac());
-//			beacon.setSsid("Lollercopter" + System.currentTimeMillis());
 //			beacon.setBSSID(iface.getMac());
 //			beacon.setBeaconInterval(100);		
 //			beacon.capability.cfPollRequest = true;		
 //			beacon.capability.channelAgility = true;		
 //			beacon.capability.dsssOfdm = true;		
 //			
-//			beacon.getElements().addElement(new InformationElement(
-//					ElementId.SupportedRates,
-//					new byte[] { (byte)0x82, (byte)0x84, (byte)0x8b, (byte)0x96 }
-//					));
+			Thread.sleep(10);
 			
-			TransmitInfo txInfo = sock.send(beacon.getBuffer().data, beacon.getBuffer().size);
-			
-			Frame frame = decoder.decode(beacon.getBuffer().size);
-			System.out.println("Decoded: " + frame);
-			
-			Thread.sleep(1000L);
+			sock.send(beacon);
 			
 		}
 		

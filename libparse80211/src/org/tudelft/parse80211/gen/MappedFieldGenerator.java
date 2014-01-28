@@ -46,7 +46,7 @@ public class MappedFieldGenerator extends SimpleFieldGenerator
 	@Override
 	public void generateInitializer(PrintWriter writer)
 	{
-		writer.printf("\t\t%s = new %s(buffer, %d);\n",
+		writer.printf("\t\t%s = new %s(buffer, offset + %d);\n",
 				field.getSimpleName(),
 				getSimpleTypeName(),
 				mapped.offset()

@@ -26,7 +26,7 @@ public class U8FieldGenerator extends SimpleFieldGenerator
 	@Override
 	public void generateSetter(PrintWriter writer)
 	{
-		generateSetter(writer, "int", String.format("buffer.data[offset+%d] = value;", annotation.offset()));
+		generateSetter(writer, "int", String.format("buffer.data[offset+%d] = (byte)(value & 0xff);", annotation.offset()));
 	}
 
 }
