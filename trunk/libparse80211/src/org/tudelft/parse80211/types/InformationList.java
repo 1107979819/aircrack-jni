@@ -35,6 +35,16 @@ public class InformationList extends BufferBacked
 		return count;
 	}
 	
+	public void addInformationElement(InformationElementId id, byte[] payload)
+	{
+		// TODO check max payload size
+		buffer.data[buffer.size] = (byte)id.getCode();
+		buffer.data[buffer.size+1] = (byte)payload.length;
+		System.arraycopy(payload, 0, buffer.data, buffer.size+2, payload.length);
+		
+		buffer.size += payload.length + 2;		
+	}	
+	
 	public String getSSID()
 	{
 		String ret = "";
@@ -46,6 +56,12 @@ public class InformationList extends BufferBacked
 			}
 		
 		return ret;
+	}
+	
+	public void setSSID()
+	{
+		// TODO remove old SSID first
+		
 	}
 
 }

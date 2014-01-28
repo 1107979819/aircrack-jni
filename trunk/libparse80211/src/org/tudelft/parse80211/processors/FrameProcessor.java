@@ -14,17 +14,21 @@ import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic.Kind;
 import javax.tools.JavaFileObject;
 
-import org.tudelft.parse80211.annotations.Mapped;
 import org.tudelft.parse80211.annotations.Bit;
 import org.tudelft.parse80211.annotations.Bits;
+import org.tudelft.parse80211.annotations.Mapped;
 import org.tudelft.parse80211.annotations.U16;
+import org.tudelft.parse80211.annotations.U32;
+import org.tudelft.parse80211.annotations.U64;
 import org.tudelft.parse80211.annotations.U8;
 import org.tudelft.parse80211.gen.BitFieldGenerator;
 import org.tudelft.parse80211.gen.BitsFieldGenerator;
 import org.tudelft.parse80211.gen.ClassGenerator;
-import org.tudelft.parse80211.gen.TemplateClassGenerator;
 import org.tudelft.parse80211.gen.MappedFieldGenerator;
+import org.tudelft.parse80211.gen.TemplateClassGenerator;
 import org.tudelft.parse80211.gen.U16FieldGenerator;
+import org.tudelft.parse80211.gen.U32FieldGenerator;
+import org.tudelft.parse80211.gen.U64FieldGenerator;
 import org.tudelft.parse80211.gen.U8FieldGenerator;
 
 @SupportedAnnotationTypes("org.tudelft.parse80211.annotations.Template")
@@ -73,13 +77,21 @@ public class FrameProcessor extends AbstractProcessor
 					if (element.getAnnotation(Bits.class)!=null)
 						gen.addGenerator(new BitsFieldGenerator(element, element.getAnnotation(Bits.class)));
 					
-					// Signed byte 
+					// Unsigned byte 
 					if (element.getAnnotation(U8.class)!=null)
 						gen.addGenerator(new U8FieldGenerator(element, element.getAnnotation(U8.class)));
 					
-					// Signed short 
+					// Unsigned short 
 					if (element.getAnnotation(U16.class)!=null)
 						gen.addGenerator(new U16FieldGenerator(element, element.getAnnotation(U16.class)));
+					
+					// Unsigned int 
+					if (element.getAnnotation(U32.class)!=null)
+						gen.addGenerator(new U32FieldGenerator(element, element.getAnnotation(U32.class)));
+					
+					// Unsigned long 
+					if (element.getAnnotation(U64.class)!=null)
+						gen.addGenerator(new U64FieldGenerator(element, element.getAnnotation(U64.class)));
 					
 					// Address, Element List					
 					if (element.getAnnotation(Mapped.class)!=null)

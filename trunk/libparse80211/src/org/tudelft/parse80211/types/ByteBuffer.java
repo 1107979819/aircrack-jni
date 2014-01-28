@@ -12,6 +12,11 @@ public class ByteBuffer
 		this.size = data.length;
 	}
 
+	public ByteBuffer(int size)
+	{
+		this(new byte[size]);
+	}
+
 	private final static int printWidth = 16;
 
 	public static void printLine(StringBuffer buffer, byte[] buf, int start, int count)
@@ -23,7 +28,7 @@ public class ByteBuffer
 			
 			// Avoid out-of-bounds exceptions
 			if (start+i>=count)
-				buffer.append("  ");
+				buffer.append("   ");
 			else
 				// Print hex byte
 				buffer.append(String.format("%02x ", buf[start+i] & 0xff));
@@ -51,7 +56,7 @@ public class ByteBuffer
 	{
 		StringBuffer buffer = new StringBuffer();
 		
-		for (int i=0; i<size; i+=16)
+		for (int i=0; i<count; i+=16)
 		{
 			printLine(buffer, data, i, count);
 			buffer.append("\n");

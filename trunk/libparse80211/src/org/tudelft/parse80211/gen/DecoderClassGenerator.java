@@ -35,12 +35,12 @@ public class DecoderClassGenerator extends EncoderDecoderClassGenerator
 	protected void writeConstructor(PrintWriter writer)
 	{
 		writer.println("");
-		writer.printf("\tpublic %s(ByteBuffer buffer)\n", classElement.getSimpleName());
+		writer.printf("\tpublic %s(ByteBuffer buffer, int offset)\n", classElement.getSimpleName());
 		writer.println("\t{");
-		writer.println("\t\tsuper(buffer);");
+		writer.println("\t\tsuper(buffer, offset);");
 		writer.println("\t\t");
 		
-		writer.println("\t\tFrame frame = new Frame(buffer);");
+		writer.println("\t\tFrame frame = new Frame(buffer, offset);");
 		writer.println("\t\tfor (int i=0; i<64; i++)");
 		writer.println("\t\t\tframes[i] = frame;");
 		writer.println("\t\t");
@@ -49,7 +49,7 @@ public class DecoderClassGenerator extends EncoderDecoderClassGenerator
 		{
 			FrameType type = element.getAnnotation(FrameType.class);
 			int index = type.type() | (type.subType()<<2);
-			writer.printf("\t\tframes[%d] = new %s(buffer);\n", index, element.getSimpleName());
+			writer.printf("\t\tframes[%d] = new %s(buffer, offset);\n", index, element.getSimpleName());
 		}
 		
 		writer.println("\t}");
