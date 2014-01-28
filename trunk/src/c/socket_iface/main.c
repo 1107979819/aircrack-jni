@@ -149,7 +149,34 @@ int sendError(int socket, int methodId, const char * message)
  * @param payloadLength payload length.
  * @param payload payload data.
  */
-int sendPayload(int socket, int methodId, struct rx_info * rxInfo, int payloadLength, const char * payload)
+int sendPayload(int socket, int methodId, int payloadLength, const char * payload)
+{
+	Message returnMessage;
+
+	// Clear out the message struct
+	memset(&returnMessage, 0, sizeof(Message));
+
+	returnMessage.methodId = methodId;
+	returnMessage.argument = payloadLength;
+	returnMessage.payloadLength = payloadLength;
+
+	// Copy the message and payload into a single buffer
+	memcpy(rxtxBuffer, &returnMessage, sizeof(Message));
+	memcpy(rxtxBuffer + sizeof(Message), payload, payloadLength);
+
+	// Send the message on the socket
+	return send(socket, rxtxBuffer, sizeof(Message) + payloadLength, 0);
+}
+
+/**
+ * Sends a message with payload.
+ *
+ * @param socket socket on which to send the message.
+ * @param methodId method that generated the message.
+ * @param payloadLength payload length.
+ * @param payload payload data.
+ */
+int sendPayloadWithRxInfo(int socket, int methodId, struct rx_info * rxInfo, int payloadLength, const char * payload)
 {
 	Message returnMessage;
 
@@ -169,19 +196,29 @@ int sendPayload(int socket, int methodId, struct rx_info * rxInfo, int payloadLe
 	return send(socket, rxtxBuffer, sizeof(Message) + payloadLength + sizeof(struct rx_info), 0);
 }
 
+/**
+ * Handles an incoming RPC call from a connected client.
+ *
+ */
 int handleMessage(int socket, Message * message)
 {
 	char interfaceName[INTERFACENAME_LENGTH];
+	char mac[6];
 
-	int err, bytesRead;
+	struct tx_info txi;
+
+	int err, byteCount, len;
 	Message returnMessage;
 	memset(&returnMessage, 0, sizeof(Message));
-
-//	printf("HANDLEMESSAGE MethodID: %d\n", message->methodId);
 
 	// Precondition
 	if (message->methodId != Open && wi == NULL)
 		return sendError(socket, Open, "Interface not open");
+
+	printf("Message received\n");
+	printf("\tMethod ID: %d\n", message->methodId);
+	printf("\tArgument: %d\n", message->argument);
+	printf("\tPayload length: %d\n", message->payloadLength);
 
 	// Handle messages
 	switch (message->methodId)
@@ -196,8 +233,11 @@ int handleMessage(int socket, Message * message)
 //		printf("Payload length: %d\n", message->payloadLength);
 
 		// Get interface name from payload
-		memcpy(interfaceName, message->payload, message->payloadLength);
-		interfaceName[message->payloadLength] = 0;
+		len = message->payloadLength;
+		if (len>INTERFACENAME_LENGTH-1)
+			len = INTERFACENAME_LENGTH-1;
+		memcpy(interfaceName, message->payload, len);
+		interfaceName[len] = 0;
 
 		// Open interface
 //		printf("OPEN: [%s]\n", interfaceName);
@@ -225,20 +265,34 @@ int handleMessage(int socket, Message * message)
 
 		// Read a frame
 //		printf("\tBlocking for read ...\n");
-		bytesRead = wi_read(wi, wifiBuffer, WIFI_BUFFER_SIZE, &rxInfo);
+		byteCount = wi_read(wi, wifiBuffer, WIFI_BUFFER_SIZE, &rxInfo);
 //		printf("\tFrame received\n");
 
-		if (bytesRead<0)
+		if (byteCount<0)
 			return sendError(socket, Read, "Unable to read from interface.");
 		else
 		{
-			sendPayload(socket, Read, &rxInfo, bytesRead, wifiBuffer);
+			sendPayloadWithRxInfo(socket, Read, &rxInfo, byteCount, wifiBuffer);
 //			printf("\tFrame sent\n");
 		}
 
 		break;
 
 	case Write:
+	
+		// TODO check payload max length
+	
+		byteCount = wi_write(wi, message->payload, message->payloadLength, &txi);
+		
+		printf("Bytes tx: %d\n", byteCount);
+
+		if (byteCount<0)
+			return sendError(socket, Read, "Unable to write packet to interface.");
+		else
+		{
+			sendPayload(socket, Write, sizeof(struct tx_info), &txi);
+		}
+	
 		break;
 
 	case SetChannel:
@@ -263,15 +317,49 @@ int handleMessage(int socket, Message * message)
 		break;
 
 	case SetFrequency:
+
+		if (wi_set_freq(wi, message->argument))
+			return sendError(socket, SetChannel, "Unable to set frequency");
+		else
+			// Success
+			return sendSuccess(socket, SetFrequency);
+
 		break;
 
 	case GetFrequency:
+
+		err = wi_get_freq(wi);
+
+		if (err == -1)
+			return sendError(socket, Open, "Unable to get frequency");
+		else
+			return sendReturnValue(socket, GetFrequency, err);
+
 		break;
 
 	case SetMac:
+
+		if (message->payloadLength!=6)
+			return sendError(socket, Open, "MAC address must be 6 bytes long");
+			
+		err = wi_set_mac(wi, message->payload);
+
+		if (err == -1)
+			return sendError(socket, Open, "Unable to set MAC address");
+		else
+			return sendReturnValue(socket, SetMac, err);
+
 		break;
 
 	case GetMac:
+	
+		err = wi_get_mac(wi, mac);
+
+		if (err == -1)
+			return sendError(socket, Open, "Unable to get MAC address");
+		else
+			return sendPayload(socket, GetMac, 6, mac);
+	
 		break;
 
 	case SetRate:
