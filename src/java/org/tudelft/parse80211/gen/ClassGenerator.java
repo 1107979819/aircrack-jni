@@ -11,8 +11,8 @@ import javax.lang.model.element.TypeElement;
 public class ClassGenerator
 {
 
-	protected List<Generator> generators = new ArrayList<>();
-	protected HashSet<String> includes = new HashSet<>();
+	protected List<Generator> generators = new ArrayList<Generator>();
+	protected HashSet<String> includes = new HashSet<String>();
 	
 	protected TypeElement classElement;
 	
