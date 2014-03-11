@@ -1,64 +1,95 @@
-<project default="all" name="aircrack-jni">
+<project name="LibParse80211" default="dist" basedir=".">
 
-	<property name="build" value="build"/>
-	<property name="classes" value="${build}/class"/>
-	<property name="jar" value="${build}/aircrack-jni.jar"/>
-
-	<property name="src" value="src/java"/>
-	<property name="lib" value="lib"/>
-
-	<property name="doc" value="doc"/>
+	<!-- Libs -->
+	<property name="lib" location="lib"/>
 	
-	<target name="all" depends="compile, package"/>
+	<!-- Source -->
+	<property name="src" location="src/java"/>
 	
-	<!-- compile the sources -->
-	<target name="compile">
-		<mkdir dir="${classes}"/>
+	<property name="build" location="build"/>
+	<property name="build-processor" location="build-processor"/>
+
+	<target name="init">
+		<mkdir dir="${build}"/>
+		<mkdir dir="${build-processor}"/>
+	</target>
+
+	<target name="compile" depends="init">
 		<javac
-			srcdir="${src}"
-			destdir="${classes}"
-			classpath="${bcelpath}"
-			source="1.5"
-			debug="true"
-			encoding="iso-8859-1"		
-		>
+			destdir="${build}">
+			<src path="${src}"/>
+			
+			<compilerarg value="-s"/>
+			<compilerarg value="${src}"/>
+
+			<include name="org/tudelft/parse80211/template/**/*"/>
+			
 			<classpath>
-				<fileset dir="${lib}">
-					<include name="*.jar"/>
-				</fileset>
+				<pathelement path="processor.jar"/>
+			</classpath>
+			
+		</javac>
+	</target>
+
+	<target name="compile-processor" depends="init">
+		<javac
+			destdir="${build-processor}">
+			<src path="${src}"/>
+
+			<include name="org/tudelft/parse80211/annotations/**/*"/>
+			<include name="org/tudelft/parse80211/gen/**/*"/>
+			<include name="org/tudelft/parse80211/processors/**/*"/>
+			<include name="org/tudelft/parse80211/types/**/*"/>
+			
+			<classpath>
+				<fileset dir="${lib}" includes="**.jar"/>
 			</classpath>
 		</javac>
 	</target>
 
-	<!-- package the tools into a single .jar file -->
-	<target name="package" depends="compile"> 
-		<mkdir dir="${build}"/>
-		<jar destfile="${jar}"> 
-			<fileset dir="${classes}"><include name="**/*.class"/></fileset>
-			<manifest><attribute name="Main-Class" value="org.tudelft.aircrack.Interface"/></manifest>
+	<target name="processor" depends="compile-processor">
+
+		<jar
+			destfile="processor.jar"
+			>
+			
+			<service
+				type="javax.annotation.processing.Processor"
+				>
+				<provider classname="org.tudelft.parse80211.processors.FrameProcessor"/>
+				<provider classname="org.tudelft.parse80211.processors.DecoderProcessor"/>
+				<provider classname="org.tudelft.parse80211.processors.EncoderProcessor"/>
+			</service>
+
+			<fileset dir="${build-processor}" includes="**/*.class"/>
 		</jar>
+		
+	</target>
+	
+	<target name="dist" depends="processor, compile">
+
+		<jar
+			destfile="libparse80211.jar"
+			>
+			<manifest>
+				<attribute
+					name="Main-Class"
+					value="org.tudelft.parse80211.Generate"
+					/>
+			</manifest>
+			
+			<!-- metainf dir="META-INF" includes="**/*"/ -->
+			<fileset dir="${build}" includes="**/*.class"/>
+			<zipgroupfileset dir="${lib}" includes="**/*.jar" />
+		</jar>
+		
 	</target>
 
-	<!-- compile the sources -->
-	<target name="doc">
-		<mkdir dir="${tools.doc}"/>
-		<javadoc
-			sourcepath="${src}"
-			destdir="${doc}"
-		>
-			<classpath>
-				<fileset dir="${lib}">
-					<include name="**/*.jar"/>
-				</fileset>
-			</classpath>
-    		</javadoc>
-	</target>
-
-	<!-- clean -->
 	<target name="clean">
 		<delete dir="${build}"/>
-		<delete file="${jar}"/>
-		<delete file="${doc}"/>
+		<delete dir="${build-processor}"/>
+		<delete file="processor.jar"/>
+		<delete file="libparse80211.jar"/>
 	</target>
 
 </project>

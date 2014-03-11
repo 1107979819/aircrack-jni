@@ -9,7 +9,7 @@ import org.tudelft.parse80211.types.ByteBuffer;
 public class EncoderDecoderClassGenerator extends ClassGenerator
 {
 
-	protected ArrayList<TypeElement> frames = new ArrayList<>();
+	protected ArrayList<TypeElement> frames = new ArrayList<TypeElement>();
 
 	public EncoderDecoderClassGenerator(TypeElement classElement)
 	{

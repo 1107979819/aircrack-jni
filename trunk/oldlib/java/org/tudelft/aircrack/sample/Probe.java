@@ -17,7 +17,7 @@ public class Probe
 {
 	
 	// Wait time in milliseconds
-	private final static long waitTime = 120;
+	private final static long waitTime = 1200;
 	
 	public static void probeChannel(Interface iface, int channel) throws IOException, DecodingException
 	{
@@ -36,13 +36,17 @@ public class Probe
 		probeRequest.setDuration((int)(waitTime * 10));
 		probeRequest.getElements().addElement(new InformationElement(ElementId.SSID, ""));
 		
+		System.out.println(iface.getChannel());
+		
 		// Send probe request
 		TransmitInfo transmitInfo = new TransmitInfo();
 		byte rawFrame[] = Frame.encode(probeRequest);
 		
-		iface.write(rawFrame, transmitInfo);
-		Thread.yield();
-		iface.write(rawFrame, transmitInfo);
+//		iface.write(rawFrame, transmitInfo);
+//		Thread.yield();
+//		iface.write(rawFrame, transmitInfo);
+//		Thread.yield();
+//		iface.write(rawFrame, transmitInfo);
 		
 		// Collect probe responses
 		long startTime = System.currentTimeMillis();
@@ -50,6 +54,9 @@ public class Probe
 		while (System.currentTimeMillis()-startTime < waitTime)
 		{
 			Frame frame = iface.receive();
+		
+			if (frame!=null)
+				System.out.println(frame.getFrameControl().type + " " + frame.getFrameControl().subType + " " + frame.getClass());
 			
 			if (frame instanceof ProbeResponse)
 			{
@@ -78,13 +85,15 @@ public class Probe
 //		for (int i=1; i<=13; i++)
 //			probeChannel(iface, i);
 		
-		probeChannel(iface, 6);
-		probeChannel(iface, 9);
-		probeChannel(iface, 11);
+		while (true)
+		{
+			// for (int i=1; i<=13; i++)
+			probeChannel(iface, 11);
+		}
 
-		System.out.println("Total scan time: " + (System.currentTimeMillis() - startTime));
+//		System.out.println("Total scan time: " + (System.currentTimeMillis() - startTime));
 		
-		iface.close();
+//		iface.close();
 	}	
 
 }
