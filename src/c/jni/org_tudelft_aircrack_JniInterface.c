@@ -75,19 +75,19 @@ JNIEXPORT jint JNICALL Java_org_tudelft_aircrack_JniInterface__1read(JNIEnv * en
 	return bytesRead;
 }
 
-JNIEXPORT jint JNICALL Java_org_tudelft_aircrack_JniInterface__1write(JNIEnv * env, jclass class, jlong wifPointer, jbyteArray bufferArray, jobject object)
+JNIEXPORT jint JNICALL Java_org_tudelft_aircrack_JniInterface__1write(JNIEnv * env, jclass class, jlong wifPointer, jbyteArray bufferArray, jint length, jobject object)
 {
 	struct wif * wi = (struct wif*)wifPointer;
 	struct tx_info txi;
 
-	jsize bufferSize = (*env)->GetArrayLength(env, bufferArray);
+	// jsize bufferSize = (*env)->GetArrayLength(env, bufferArray);
 
 	// Allocate a temporary transmit buffer and copy packet into it
-	unsigned char *buffer = (unsigned char*)malloc(bufferSize);
-	(*env)->GetByteArrayRegion(env, bufferArray, 0, bufferSize, buffer);
+	unsigned char *buffer = (unsigned char*)malloc(length);
+	(*env)->GetByteArrayRegion(env, bufferArray, 0, length, buffer);
 	
 	// Transmit packet
-	int ret = wi_write(wi, buffer, bufferSize, &txi);
+	int ret = wi_write(wi, buffer, length, &txi);
 
 	// Free temporary buffer
 	free(buffer);

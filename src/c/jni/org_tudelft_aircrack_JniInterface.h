@@ -37,7 +37,7 @@ JNIEXPORT jint JNICALL Java_org_tudelft_aircrack_JniInterface__1read
  * Signature: (J[BLorg/tudelft/aircrack/TransmitInfo;)I
  */
 JNIEXPORT jint JNICALL Java_org_tudelft_aircrack_JniInterface__1write
-  (JNIEnv *, jclass, jlong, jbyteArray, jobject);
+  (JNIEnv *, jclass, jlong, jbyteArray, jint, jobject);
 
 /*
  * Class:     org_tudelft_aircrack_JniInterface
