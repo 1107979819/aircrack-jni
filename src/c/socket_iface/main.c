@@ -215,10 +215,13 @@ int handleMessage(int socket, Message * message)
 	if (message->methodId != Open && wi == NULL)
 		return sendError(socket, Open, "Interface not open");
 
+	/*
 	printf("Message received\n");
 	printf("\tMethod ID: %d\n", message->methodId);
 	printf("\tArgument: %d\n", message->argument);
 	printf("\tPayload length: %d\n", message->payloadLength);
+	fflush(stdout);
+	*/
 
 	// Handle messages
 	switch (message->methodId)
@@ -281,7 +284,7 @@ int handleMessage(int socket, Message * message)
 	case Write:
 	
 		// TODO check payload max length
-	
+
 		byteCount = wi_write(wi, message->payload, message->payloadLength, &txi);
 		
 		printf("Bytes tx: %d\n", byteCount);
@@ -296,6 +299,8 @@ int handleMessage(int socket, Message * message)
 		break;
 
 	case SetChannel:
+
+		printf("Setting channel to %d, %d\n", message->argument, wi_get_channel(wi));
 
 		if (wi_set_channel(wi, message->argument))
 			return sendError(socket, SetChannel, "Unable to set channel");
@@ -444,12 +449,9 @@ int main()
 				done = 1;
 				continue;
 			}
-
-			// Unpack message
-			Message message;
-			memcpy(&message, rxtxBuffer, length);
-
-			handleMessage(clientSocket, &message);
+			
+			// Process
+			handleMessage(clientSocket, (Message*)rxtxBuffer);
 
 		} while (!done);
 
