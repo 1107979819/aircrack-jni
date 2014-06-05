@@ -52,13 +52,13 @@ public class ByteBuffer
 		
 	}
 	
-	public String toHex(int count)
+	public String toHex(int offset, int count)
 	{
 		StringBuffer buffer = new StringBuffer();
 		
-		for (int i=0; i<count; i+=16)
+		for (int i=0; i<count-offset; i+=16)
 		{
-			printLine(buffer, data, i, count);
+			printLine(buffer, data, i+offset, count);
 			buffer.append("\n");
 		}
 
@@ -67,7 +67,7 @@ public class ByteBuffer
 	
 	public String toHex()
 	{
-		return toHex(size);
+		return toHex(0, size);
 	}
 	
 }

@@ -60,14 +60,16 @@ public class MappedFieldGenerator extends SimpleFieldGenerator
 		String get = String.format("return %s;", field.getSimpleName());
 		
 		// Optional size field for variable-sized 
-		
 		generateGetter(writer, getSimpleTypeName(), get);
 	}
 
 	@Override
 	public void generateSetter(PrintWriter writer)
 	{
-		generateSetter(writer, getSimpleTypeName(), "");
+		// Setter body
+		String set = String.format("%s.set(value);", field.getSimpleName());
+		
+		generateSetter(writer, getSimpleTypeName(), set);
 	}
 	
 }

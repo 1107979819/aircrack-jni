@@ -51,14 +51,13 @@ public abstract class SocketInterface extends Interface
 		return encoder;
 	}
 	
-	protected void transmitMessage(MethodID methodId, int argument)
+	protected void transmitMessage(MethodID methodId, int argument, int payLoadLength)
 	{
 		txMessage.setMethodId(methodId.ordinal());
 		txMessage.setArgument(argument);
+		txMessage.setPayloadLength(payLoadLength);
 
-		// Send raw message to the deamon
-//		System.out.println(txMessage.getBuffer().toHex());
-		
+		// Send raw message to the daemon
 		try
 		{
 			
@@ -89,7 +88,7 @@ public abstract class SocketInterface extends Interface
 	protected void sendMessage(MethodID methodId, int argument)
 	{
 		txMessage.setPayloadLength(0);
-		transmitMessage(methodId, argument);
+		transmitMessage(methodId, argument, 0);
 	}
 
 	protected void sendMessage(MethodID methodId, int argument, String payload)
@@ -97,9 +96,8 @@ public abstract class SocketInterface extends Interface
 		byte[] stringBytes = payload.getBytes();
 		
 		txMessage.getPayload().write(stringBytes);
-		txMessage.setPayloadLength(stringBytes.length);
 		
-		transmitMessage(methodId, argument);
+		transmitMessage(methodId, argument, stringBytes.length);
 	}
 	
 	protected void sendMessage(MethodID methodId, String payload)
@@ -109,7 +107,7 @@ public abstract class SocketInterface extends Interface
 
 	protected void sendMessage(MethodID methodId)
 	{
-		transmitMessage(methodId, 0);
+		transmitMessage(methodId, 0, 0);
 	}
 	
 	protected String getPayloadAsString(SocketMessage msg)
@@ -165,31 +163,15 @@ public abstract class SocketInterface extends Interface
 		}
 	}
 
-	/*
-	@Override
-	public int read(byte[] buffer, ReceiveInfo receiveInfo)
-	{
-		SocketMessage result = sendMessage(new SocketMessage(MethodID.Read));
-		
-		// Copy payload
-		System.arraycopy(result.payload, 0, buffer, 0, result.argument);
-		
-		return result.argument;
-	}
-	*/
-
-//	@Override
-//	public int write(byte[] buffer, int length, TransmitInfo transmitInfo)
-//	{
-//		sendMessage(new SocketMessage(MethodID.Write, buffer));
-//		return 0;
-//	}
-	
 	public void send(Frame frame)
 	{
-		txMessage.setPayloadLength(txMessage.getBuffer().size - socketMessageLength);
-		transmitMessage(MethodID.Write, 0);
-
+		transmitMessage(MethodID.Write, 0, txMessage.getBuffer().size - socketMessageLength);
+	}
+	
+	public void send(byte[] rawFrame)
+	{
+		txMessage.write(socketMessageLength, rawFrame);
+		transmitMessage(MethodID.Write, 0, rawFrame.length);
 	}
 	
 	@Override

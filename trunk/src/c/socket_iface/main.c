@@ -204,6 +204,7 @@ int handleMessage(int socket, Message * message)
 {
 	char interfaceName[INTERFACENAME_LENGTH];
 	char mac[6];
+	int i;
 
 	struct tx_info txi;
 
@@ -287,6 +288,26 @@ int handleMessage(int socket, Message * message)
 
 		byteCount = wi_write(wi, message->payload, message->payloadLength, &txi);
 		
+		for (i=0; i<4; i++)
+			printf("\t%02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x\n",
+				message->payload[i*16+0],
+				message->payload[i*16+1],
+				message->payload[i*16+2],
+				message->payload[i*16+3],
+				message->payload[i*16+4],
+				message->payload[i*16+5],
+				message->payload[i*16+6],
+				message->payload[i*16+7],
+				message->payload[i*16+8],
+				message->payload[i*16+9],
+				message->payload[i*16+10],
+				message->payload[i*16+11],
+				message->payload[i*16+12],
+				message->payload[i*16+13],
+				message->payload[i*16+14],
+				message->payload[i*16+15]
+				);
+		
 		printf("Bytes tx: %d\n", byteCount);
 
 		if (byteCount<0)
@@ -300,7 +321,7 @@ int handleMessage(int socket, Message * message)
 
 	case SetChannel:
 
-		printf("Setting channel to %d, %d\n", message->argument, wi_get_channel(wi));
+		// printf("Setting channel to %d, %d\n", message->argument, wi_get_channel(wi));
 
 		if (wi_set_channel(wi, message->argument))
 			return sendError(socket, SetChannel, "Unable to set channel");

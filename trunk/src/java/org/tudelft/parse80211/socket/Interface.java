@@ -1,5 +1,7 @@
 package org.tudelft.parse80211.socket;
 
+import java.io.IOException;
+
 import org.tudelft.parse80211.frames.Frame;
 import org.tudelft.parse80211.types.Address;
 
@@ -29,18 +31,11 @@ public abstract class Interface
 		return null;
 	}
 	
-	/*
-	public synchronized TransmitInfo send(Frame frame) throws IOException
+	public synchronized void send(Frame frame) throws IOException
 	{
-		
-		byte[] raw = Frame.encode(frame);
-		TransmitInfo transmitInfo = new TransmitInfo();
-		
-		write(raw, raw.length, transmitInfo);
-		
-		return transmitInfo;
 	}
 
+	/*
 	public synchronized TransmitInfo send(byte[] data, int length) throws IOException
 	{
 		

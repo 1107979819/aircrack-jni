@@ -1,12 +1,6 @@
-cat /sdcard/iwgetid > /system/bin/iwgetid
-chmod 777 /system/bin/iwgetid
-cat /sdcard/iwlist > /system/bin/iwlist
-chmod 777 /system/bin/iwlist
-cat /sdcard/iwpriv > /system/bin/iwpriv
-chmod 777 /system/bin/iwpriv
-cat /sdcard/iwspy > /system/bin/iwspy
-chmod 777 /system/bin/iwspy
-cat /sdcard/iwconfig > /system/bin/iwconfig
-chmod 777 /system/bin/iwconfig
-cat /sdcard/iwevent > /system/bin/iwevent
-chmod 777 /system/bin/iwevent
+adb root
+adb shell "mount -o rw,remount /system"
+for f in `find -name iw\*`; do
+	adb push $f /system/bin
+	adb shell "chmod 777 /system/bin/$f"
+done

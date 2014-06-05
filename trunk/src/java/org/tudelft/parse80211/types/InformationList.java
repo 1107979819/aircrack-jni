@@ -52,7 +52,8 @@ public class InformationList extends BufferBacked
 			if ((buffer.data[off] & 0xff)==InformationElementId.SSID.getCode())
 			{
 				for (int i=0; i<(buffer.data[off+1] & 0xff); i++)
-					ret+= String.format("%c", buffer.data[off+2+i]);
+					ret+= String.format("%c", buffer.data[off+2+i] & 0xff);
+				break;
 			}
 		
 		return ret;
