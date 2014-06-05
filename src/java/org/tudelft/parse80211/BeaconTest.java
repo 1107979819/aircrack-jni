@@ -43,7 +43,7 @@ public class BeaconTest
 			
 			beacon.getInformationList().addInformationElement(InformationElementId.SSID, ssid.getBytes("UTF-8"));
 			beacon.getInformationList().addInformationElement(InformationElementId.SupportedRates, new byte[] { (byte)0x82, (byte)0x84, (byte)0x8b, (byte)0x96 });
-
+			
 //			System.out.println("Buffer Size: " + beacon.getBuffer().size);
 //			System.out.println("Buffer Offset: " + beacon.getInformationList().getOffset());
 //			System.out.println("Count: " + beacon.getInformationList().count());

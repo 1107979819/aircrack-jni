@@ -1,6 +1,7 @@
 package org.tudelft.parse80211;
 
 import org.tudelft.parse80211.frames.Frame;
+import org.tudelft.parse80211.frames.management.ProbeRequest;
 import org.tudelft.parse80211.socket.LinuxSocketInterface;
 import org.tudelft.parse80211.socket.SocketInterface;
 
@@ -23,8 +24,19 @@ public class Mon
 			
 			if (frame != null)
 			{
-				System.out.println(frame);
-				System.out.println(sock.getReceiveInfo().getPower());
+				
+				if (frame instanceof ProbeRequest)
+				{
+					ProbeRequest request = (ProbeRequest)frame;
+
+					if (request.getInformationList().getSSID().length()==0)
+					{
+						System.out.println(frame.getBuffer().toHex(39, 128));
+					} else
+						System.out.println("[" + request.getInformationList().getSSID() + "]");
+				}
+				
+				// System.out.println(sock.getReceiveInfo().getPower());
 			}
 		}
 		

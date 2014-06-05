@@ -29,6 +29,12 @@ public class BufferBacked
 		return offset;
 	}
 	
+	public void set(BufferBacked value)
+	{
+		
+		write(value.getBuffer().data);
+	}
+	
 	public void write(byte[] data)
 	{
 		// TODO check array bounds
@@ -38,7 +44,6 @@ public class BufferBacked
 	public void write(int offset, byte[] src)
 	{
 		// TODO check array bounds
-		System.out.println("Write: " + this.offset + offset + " " + offset + " " + src.length);
 		System.arraycopy(src, 0, this.buffer.data, this.offset + offset, src.length);
 	}
 
