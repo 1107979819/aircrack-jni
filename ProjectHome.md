@@ -1,0 +1,1 @@
+The goal of this project is to provide Java bindings for aircrack-ng, as well as a comprehensive library for coding and decoding 802.11 frames.
